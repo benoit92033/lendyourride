@@ -1,0 +1,1 @@
+export { MyMenu } from './Menu';
