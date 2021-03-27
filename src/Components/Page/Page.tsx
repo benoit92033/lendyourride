@@ -1,19 +1,28 @@
+import { Button } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { Bien } from '../Bien';
 
-export const Page = () => {
+interface Props {
+  displayedData: ({
+    Location: string;
+    Title: string;
+  }| null)[];
+}
+
+export const Page = ({displayedData} : Props) => {
+  const [visible, setVisible] = useState(false);
+  const [clickedIndex, setClickedIndex] = useState(1);
+
   const [data, setData] = useState({ Location: "", Title: "" });
-  const [supoData, setSupoData] = useState([
-    {Location: "Annecy", Title: "Incroyable Audi R8"},
-    {Location: "Lyon", Title: "Chiche?"},
-    {Location: "Montcuq", Title: "Direct dans"},
-    {Location: "Carnival", Title: "Opel astra"},
-    {Location: "Oasis", Title: "Tout terrain"},
-    {Location: "Tropical", Title: "Pourri"},
-    {Location: "Eau", Title: "LALALLA"},
-  ])
- 
+  //A supp après l'api prête
+
+  function clickOnVisualisation(index: number) {
+    setClickedIndex(index);
+    setVisible(true);
+  }
+  
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios(
@@ -21,6 +30,7 @@ export const Page = () => {
       );
  
       setData({Location: result.data.Location, Title: result.data.Title});
+      console.log(data)
     };
  
     fetchData();
@@ -28,11 +38,23 @@ export const Page = () => {
   return (
     <>
       <Content style={{paddingTop: '10vh'}}>
-        {supoData.map((row) => (
-          <div style={{background: 'white', color: 'black', height: '300px', marginLeft: '20px', marginRight: '20px', border: 'solid 1px', borderBlockColor: 'grey', borderBottom:'grey'}}>
-            {row.Location} : {row.Title}
-          </div>
-        )) }
+        {/*A remplacer par data.map*/}
+        {displayedData.length > 0 ? displayedData.map((row, index) => {
+          if(row != null){
+            return (
+              <div key={index} style={{background: 'white', color: 'black', height: '300px', marginLeft: '20px', marginRight: '20px', border: 'solid 1px', borderBlockColor: 'grey', borderBottom:'grey'}}>
+                {row?.Location} : {row?.Title}
+                <Button type="primary" onClick={() => clickOnVisualisation(index)} className="buttonVisu">
+                  Visualisation d'un bien
+                </Button>
+              </div>
+            )}
+            return null
+          }) : <p>No data</p>}
+        {visible && displayedData != null ?
+          <Bien data={{Location: displayedData[clickedIndex]?.Location, Title: displayedData[clickedIndex]?.Title}} visible={visible} setVisible={setVisible}/> :
+          null
+        }
       </Content>
     </>
   );

@@ -1,9 +1,32 @@
-import { Menu } from 'antd';
+import { Input, Menu } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-export const MyMenu = () => {
-
+const { Search } = Input;
+interface Props {
+  data: {
+    Location: string;
+    Title: string;
+  }[];
+  setData: React.Dispatch<React.SetStateAction<({
+    Location: string;
+    Title: string;
+  }| null)[]>>;
+}
+export const MyMenu = ({setData, data} : Props) => {
+  const recherche = (value: string) => {
+    let oui: (({
+      Location: string;
+      Title: string;
+    }| null)[]) = [];
+    data.map(function(row) {
+      if(value == null || row.Title.toUpperCase().includes(value.toUpperCase())){
+         oui.push(row)
+      }
+      return null;
+    })
+    setData(oui);
+  }
   return (
     <>
       <Header 
@@ -20,7 +43,7 @@ export const MyMenu = () => {
           <p>Img</p>
         </div>
         <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <p>Recherche</p>
+          <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 200 }} />
         </div>
         <Menu mode="horizontal" theme="dark">
           <Menu.Item key="1" /*icon={}*/>

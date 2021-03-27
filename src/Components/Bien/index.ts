@@ -1,0 +1,1 @@
+export { Bien } from './Bien';
