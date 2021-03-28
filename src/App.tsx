@@ -3,6 +3,8 @@ import Layout from 'antd/lib/layout/layout';
 import React, { useState } from 'react';
 import { MyMenu } from './Components/Menu';
 import { Page } from './Components/Page';
+import { BrowserRouter, Route } from 'react-router-dom';
+import { Login } from './Components/Login';
 
 function App() { 
   const supoData = ([
@@ -18,11 +20,28 @@ function App() {
     Location: string;
     Title: string;
   }| null)[]>(supoData);
+  
+  const [token, setToken] = useState();
+
+  const pageComponent = () =>{
+    return (
+      <div>
+        <MyMenu setData={setDiplayedData} data={supoData}/>;
+        <Page displayedData={displayedData}/>;
+      </div>
+    )
+  }
+
+  const loginComponent = () => {
+    return <Login setToken={setToken} />;
+  }
 
   return (
-    <Layout>
-      <MyMenu setData={setDiplayedData} data={supoData}/>
-      <Page displayedData={displayedData}/>
+    <Layout style={{height:'100vh'}}>
+      <BrowserRouter>
+        <Route exact path="/" component={pageComponent} />
+        <Route path="/login" component={loginComponent} />
+      </BrowserRouter>
     </Layout>
   );
 }
