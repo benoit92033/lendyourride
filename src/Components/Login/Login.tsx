@@ -1,5 +1,6 @@
 import { Button, Checkbox, Form, Input, Modal } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
+import './login.style.css';
 import React from 'react';
 
 
@@ -21,7 +22,7 @@ export const Login = ({setToken} : Props) => {
      <div style={{position: 'relative'}}>
 
       <Content style={{position: 'absolute', height: '500px', width:'500px', margin:'auto', padding:0, top:'50vh'}}>
-        <Form
+        <Form 
           name="basic"
           initialValues={{ remember: true }}
           onFinish={onFinish}
@@ -48,7 +49,7 @@ export const Login = ({setToken} : Props) => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" className="loginContent">
               Submit
             </Button>
           </Form.Item>
