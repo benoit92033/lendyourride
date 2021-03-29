@@ -8,26 +8,38 @@ interface Props {
   data: {
     Location: string;
     Title: string;
+    Description: string;
+    Type: string;
+    Tarif: number; 
+    Photo: string;
   }[];
   setData: React.Dispatch<React.SetStateAction<({
     Location: string;
     Title: string;
+    Description: string;
+    Type: string;
+    Tarif: number; 
+    Photo: string;
   }| null)[]>>;
 }
 export const MyMenu = ({setData, data} : Props) => {
 
   const recherche = (value: string) => {
-    let oui: (({
+    let menuBien: (({
       Location: string;
       Title: string;
+      Description: string;
+      Type: string;
+      Tarif: number; 
+      Photo: string;
     }| null)[]) = [];
     data.map(function(row) {
       if(value == null || row.Title.toUpperCase().includes(value.toUpperCase())){
-         oui.push(row)
+        menuBien.push(row)
       }
       return null;
     })
-    setData(oui);
+    setData(menuBien);
   }
   return (
     <>
@@ -42,7 +54,7 @@ export const MyMenu = ({setData, data} : Props) => {
           justifyContent: 'space-between'}}>
             
         <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <p>Img</p>
+          <p>Logo</p>
         </div>
         <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
           <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 200 }} />

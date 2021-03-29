@@ -2,7 +2,7 @@ import { Button, Modal } from 'antd';
 import React from 'react';
 
 interface Props {
-  data: {Title: string | undefined, Location: string | undefined};
+  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined};
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -28,6 +28,12 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
       >
         <p>Titre : {data.Title}</p>
         <p>Localisation : {data.Location}</p>
+        <p>Type : {data.Type}</p>
+        <p>Tarif : {data.Tarif}</p>
+        <p>Photo : {data.Photo}</p>
+        <p>Description : {data.Description}</p>
+        
+
       </Modal>
     </>
   );

@@ -8,17 +8,21 @@ import { Login } from './Components/Login';
 
 function App() { 
   const supoData = ([
-    {Location: "Annecy", Title: "Incroyable Audi R8"},
-    {Location: "Lyon", Title: "Chiche?"},
-    {Location: "Montcuq", Title: "Direct dans"},
-    {Location: "Carnival", Title: "Opel astra"},
-    {Location: "Oasis", Title: "Tout terrain"},
-    {Location: "Tropical", Title: "Pourri"},
-    {Location: "Eau", Title: "LALALLA"},
+    {Location: "Annecy", Title: "Incroyable Audi R8", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Lyon", Title: "Petite 206", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Marseille", Title: "Range rover", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Paris", Title: "Opel astra", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Montpellier", Title: "Tout terrain", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Avignon", Title: "Carrosse pour mariage", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Valence", Title: "Caravane de luxe", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
   ])
   const [displayedData, setDiplayedData] = useState<({
     Location: string;
     Title: string;
+    Description: string;
+    Type: string;
+    Tarif: number; 
+    Photo: string;
   }| null)[]>(supoData);
   
   const [token, setToken] = useState();
