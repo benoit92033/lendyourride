@@ -1,13 +1,15 @@
 .buttonVisu{
-    color: red;
+    color: grey;
+    background:cyan;
+    border: cyan;
 }
 
 .listeRechercheBien {
-    background:whitesmoke;
+    background: white;
     color: black;
     height: 200px;
-    margin-left: 50px;
-    margin-right: 20px;
-    border: solid 1px grey;  /* border-block-color: grey; */
+    margin-left: 100px;
+    margin-right: 100px;
+    border: solid 2px grey;  /* border-block-color: grey; */
     border-bottom:grey;
 }
