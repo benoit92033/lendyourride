@@ -11,8 +11,8 @@ interface Props {
 }
 export const Login = ({ setToken }: Props) => {
 
-  /*const user = useContext(UserContext)
-  const [redirect, setredirect] = useState(null)
+  const user = useContext(UserContext)
+  /*const [redirect, setredirect] = useState(null)
 
   useEffect(() => {
     if (user) {
@@ -84,7 +84,7 @@ export const Login = ({ setToken }: Props) => {
       <div className="login-buttons">
         <button className="login-provider-button" onClick={signInWithGoogle}>
         <img src="https://img.icons8.com/ios-filled/50/000000/google-logo.png" alt="google icon"/>
-        <span> Continue with Google</span>
+        <span> Login with Google</span>
        </button>
       </div>
     </>

@@ -6,6 +6,8 @@ import { Page } from './Components/Page';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Login } from './Components/Login';
 import { Chat } from './Components/Chat';
+import UserProvider from "./Providers/UserProvider";
+import { OmitProps } from 'antd/lib/transfer/ListBody';
 
 function App() { 
   const supoData = ([
@@ -46,13 +48,15 @@ function App() {
   }
   
   return (
-    <Layout style={{height:'100vh'}}>
-      <BrowserRouter>
-        <Route exact path="/" component={pageComponent} />
-        <Route path="/login" component={loginComponent} />
-        <Route path="/chat" component={chatComponent} />
-      </BrowserRouter>
-    </Layout>
+    //<UserProvider>
+      <Layout style={{height:'100vh'}}>
+        <BrowserRouter>
+          <Route exact path="/" component={pageComponent} />
+          <Route path="/login" component={loginComponent} />
+          <Route path="/chat" component={chatComponent} />
+        </BrowserRouter>
+      </Layout>
+    //</UserProvider>
   );
 }
  

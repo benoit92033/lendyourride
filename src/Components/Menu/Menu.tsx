@@ -1,7 +1,8 @@
 import { Input, Menu } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { auth, signInWithGoogle } from '../../firebase';
 
 const { Search } = Input;
 interface Props {
@@ -41,6 +42,15 @@ export const MyMenu = ({setData, data} : Props) => {
     })
     setData(menuBien);
   }
+
+  const [state, setState] = useState<any>({currentUser: null});
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      setState({ currentUser: user });
+    });
+  }, []);
+
   return (
     <>
       <Header 
@@ -60,9 +70,16 @@ export const MyMenu = ({setData, data} : Props) => {
           <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 200 }} />
         </div>
         <Menu mode="horizontal" theme="dark">
-          <Menu.Item key="1"/*icon={}*/>
-            <Link to="/login">Connexion</Link>
-          </Menu.Item>
+          {state.currentUser ? (
+            <Menu.Item key="1"/*icon={}*/>
+              <p>{state.currentUser.displayName}</p>
+              <button onClick={() => auth.signOut()}>Déconnexion</button>
+            </Menu.Item>
+            ) : 
+            <Menu.Item key="1"/*icon={}*/>
+              <button onClick={signInWithGoogle}>Connexion avec Google</button>
+            </Menu.Item>
+          }
         </Menu>
       </Header>
     </>
