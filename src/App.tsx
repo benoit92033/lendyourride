@@ -5,6 +5,7 @@ import { MyMenu } from './Components/Menu';
 import { Page } from './Components/Page';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { Login } from './Components/Login';
+import { Chat } from './Components/Chat';
 
 function App() { 
   const supoData = ([
@@ -40,11 +41,16 @@ function App() {
     return <Login setToken={setToken} />;
   }
 
+  const chatComponent = () => {
+    return <Chat />;
+  }
+  
   return (
     <Layout style={{height:'100vh'}}>
       <BrowserRouter>
         <Route exact path="/" component={pageComponent} />
         <Route path="/login" component={loginComponent} />
+        <Route path="/chat" component={chatComponent} />
       </BrowserRouter>
     </Layout>
   );
