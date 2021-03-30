@@ -1,11 +1,28 @@
 import { Button, Checkbox, Form, Input, Modal } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import "./login.style.css";
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
+import { signInWithGoogle } from "../../firebase";
+import { UserContext } from '../../Providers/UserProvider';
+import { Redirect } from 'react-router-dom';
+
 interface Props {
   setToken: React.Dispatch<React.SetStateAction<undefined>>;
 }
 export const Login = ({ setToken }: Props) => {
+
+  /*const user = useContext(UserContext)
+  const [redirect, setredirect] = useState(null)
+
+  useEffect(() => {
+    if (user) {
+      setredirect('/')
+    }
+  }, [user])
+  if (redirect) {
+    <Redirect to={redirect}/>
+  }*/
+
   const onFinish = (values: any) => {
     console.log("Success:", values);
   };
@@ -63,6 +80,12 @@ export const Login = ({ setToken }: Props) => {
             </Form.Item>
           </Form>
         </Content>
+      </div>
+      <div className="login-buttons">
+        <button className="login-provider-button" onClick={signInWithGoogle}>
+        <img src="https://img.icons8.com/ios-filled/50/000000/google-logo.png" alt="google icon"/>
+        <span> Continue with Google</span>
+       </button>
       </div>
     </>
   );
