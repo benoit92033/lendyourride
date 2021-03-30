@@ -71,10 +71,15 @@ export const MyMenu = ({setData, data} : Props) => {
         </div>
         <Menu mode="horizontal" theme="dark">
           {state.currentUser ? (
-            <Menu.Item key="1"/*icon={}*/>
-              <p>{state.currentUser.displayName}</p>
-              <button onClick={() => auth.signOut()}>Déconnexion</button>
-            </Menu.Item>
+              <div>
+                <Menu.Item key="1">
+                  <p>{state.currentUser.displayName /*.email*/}</p>
+                  <img className="ant-menu-item" src={(state.currentUser.photoURL)} />
+                </Menu.Item>
+                <Menu.Item key="2"/*icon={}*/>
+                  <button onClick={() => auth.signOut()}>Déconnexion</button>
+                </Menu.Item>
+              </div>
             ) : 
             <Menu.Item key="1"/*icon={}*/>
               <button onClick={signInWithGoogle}>Connexion avec Google</button>
