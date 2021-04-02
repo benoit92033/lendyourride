@@ -1,9 +1,13 @@
 import { Input, Menu } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import './menu.style.css';
 import logo from '../Images/logo.png';
+=======
+import { auth, signInWithGoogle } from '../../firebase';
+>>>>>>> 7aeb14146f0be671169f2c91ee92fca1a56fdca4
 
 const { Search } = Input;
 interface Props {
@@ -43,6 +47,15 @@ export const MyMenu = ({setData, data} : Props) => {
     })
     setData(menuBien);
   }
+
+  const [state, setState] = useState<any>({currentUser: null});
+
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      setState({ currentUser: user });
+    });
+  }, []);
+
   return (
     <>
       <Header className='headerMenu'>
@@ -52,10 +65,22 @@ export const MyMenu = ({setData, data} : Props) => {
         <div className='searchBar'>
           <Search className='searchBar2' placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} />
         </div>
-        <Menu className='menu' mode="horizontal">
-          <Menu.Item key="1"/*icon={}*/>
-            <Link to="/login">Connexion</Link>
-          </Menu.Item>
+        <Menu mode="horizontal" theme="dark">
+          {state.currentUser ? (
+              <div>
+                <Menu.Item key="1">
+                  <p>{state.currentUser.displayName /*.email*/}</p>
+                  <img className="ant-menu-item" src={(state.currentUser.photoURL)} />
+                </Menu.Item>
+                <Menu.Item key="2"/*icon={}*/>
+                  <button onClick={() => auth.signOut()}>Déconnexion</button>
+                </Menu.Item>
+              </div>
+            ) : 
+            <Menu.Item key="1"/*icon={}*/>
+              <button onClick={signInWithGoogle}>Connexion avec Google</button>
+            </Menu.Item>
+          }
         </Menu>
       </Header>
     </>
