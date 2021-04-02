@@ -2,6 +2,8 @@ import { Input, Menu } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './menu.style.css';
+import logo from '../Images/logo.png';
 
 const { Search } = Input;
 interface Props {
@@ -43,23 +45,14 @@ export const MyMenu = ({setData, data} : Props) => {
   }
   return (
     <>
-      <Header 
-        style={{
-          position: 'fixed',
-          zIndex: 1,
-          width: '100vw',
-          height: '10vh',
-          padding: 0,
-          display: 'flex',
-          justifyContent: 'space-between'}}>
-            
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <p>Logo</p>
+      <Header className='headerMenu'>
+        <div className='logo'>
+          <img src={logo}/>
         </div>
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 200 }} />
+        <div className='searchBar'>
+          <Search className='searchBar2' placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} />
         </div>
-        <Menu mode="horizontal" theme="dark">
+        <Menu className='menu' mode="horizontal">
           <Menu.Item key="1"/*icon={}*/>
             <Link to="/login">Connexion</Link>
           </Menu.Item>

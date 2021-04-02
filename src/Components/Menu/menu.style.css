@@ -1,0 +1,31 @@
+.headerMenu {
+    position: fixed !important; 
+    z-index: 1 !important;
+    width: 100vw !important;
+    height: 10vh !important;
+    /*padding: 0;*/
+    display: inline-flex !important;
+    justify-content: space-between !important;
+    /*align-items: center;
+    justify-content: center;*/
+    background-color: #737373 !important
+}
+
+.logo {
+    display: inline-flex !important;
+    min-width: 200px !important;
+}
+
+.searchBar {
+    display: block !important ;
+    min-width: 200px !important;
+    color: white !important;
+    width: 350px !important;
+}
+.searchBar2 {
+    vertical-align: middle !important;
+}
+
+.menu {
+    min-width: 200px;
+}
