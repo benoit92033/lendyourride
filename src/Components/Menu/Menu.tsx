@@ -1,4 +1,4 @@
-import { Input, Menu } from 'antd';
+import { Input, Menu, Button } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -58,34 +58,32 @@ export const MyMenu = ({setData, data} : Props) => {
           position: 'fixed',
           zIndex: 1,
           width: '100vw',
-          height: '10vh',
+          height: '12vh',
           padding: 0,
           display: 'flex',
           justifyContent: 'space-between'}}>
             
         <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <p>Logo</p>
+          <img src="logoLYR.jpg" alt=""/>
         </div>
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
-          <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 200 }} />
+        <div style={{ display: 'flex', minWidth: '200px', color: 'white', marginRight: '200px', marginTop: '30px' }}>
+          <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 500 }} />
         </div>
-        <Menu mode="horizontal" theme="dark">
+        <div style={{ display: 'flex', minWidth: '500px', color: 'white' }}>
           {state.currentUser ? (
-              <div>
-                <Menu.Item key="1">
-                  <p>{state.currentUser.displayName /*.email*/}</p>
-                  <img className="ant-menu-item" src={(state.currentUser.photoURL)} />
-                </Menu.Item>
-                <Menu.Item key="2"/*icon={}*/>
-                  <button onClick={() => auth.signOut()}>Déconnexion</button>
-                </Menu.Item>
-              </div>
+            <div style={{ display: 'inline'}}>
+                <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} src={(state.currentUser.photoURL)} />
+                <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>{state.currentUser.displayName}</p>
+                <Button type="primary" onClick={() => auth.signOut()}>
+                  Déconnexion
+                </Button>
+            </div>
             ) : 
-            <Menu.Item key="1"/*icon={}*/>
-              <button onClick={signInWithGoogle}>Connexion avec Google</button>
-            </Menu.Item>
+              <Button style={{marginTop: '30px'}} type="primary" onClick={signInWithGoogle}>
+                Connexion avec Google
+              </Button>
           }
-        </Menu>
+        </div>
       </Header>
     </>
   );

@@ -1,15 +1,24 @@
-.buttonVisu{
-    color: grey;
-    background:cyan;
-    border: cyan;
+.buttonVisu {
+    display: inline-block;
+    background: white;
+    color: black;
+    height: 400px;
+    width: 400px;
+    margin: 10px;
+    padding: 0px;
+    border-radius: 20px;
 }
 
 .listeRechercheBien {
-    background: white;
-    color: black;
-    height: 200px;
-    margin-left: 100px;
-    margin-right: 100px;
-    border: solid 2px grey;  /* border-block-color: grey; */
-    border-bottom:grey;
+    display: inline-block;
+}
+
+.titleBien {
+    color: white;
+    background-color: rgb(80,80,80,0.7);
+    padding: 33px 0px 33px 0px;
+	margin: 300px 0px 0px 0px;
+    font-size: 20px;
+    border-radius: 20px;
+    font-weight: bold;
 }
