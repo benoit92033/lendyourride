@@ -29,4 +29,6 @@ export const signInWithGoogle = () => {
   })
 }
 
-export default firebase_data;
+const db = app.firestore();
+
+export default db;

@@ -1,6 +1,7 @@
 import { Button } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import axios from 'axios';
+import db from '../../firebase.js';
 import React, { useEffect, useState } from 'react';
 import { Bien } from '../Bien';
 
@@ -15,33 +16,34 @@ interface Props {
   }| null)[];
 }
 
-export const Page = ({displayedData} : Props) => {
+export const Page = () => {
   const [visible, setVisible] = useState(false);
   const [clickedIndex, setClickedIndex] = useState(1);
 
-  const [data, setData] = useState({ Location: "", Title: "",  Description:"", Type: "", Tarif: "",  Photo:""});
-  //A supp après l'api prête
+  const data = ([
+    {Location: "Annecy", Title: "Incroyable Audi R8", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Lyon", Title: "Petite 206", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Marseille", Title: "Range rover", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Paris", Title: "Opel astra", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Montpellier", Title: "Tout terrain", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Avignon", Title: "Carrosse pour mariage", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+    {Location: "Valence", Title: "Caravane de luxe", Description: "Beau et pas cher", Type: "Vehicule", Tarif: 20, Photo: "Photo"},
+  ])
 
   function clickOnVisualisation(index: number) {
     setClickedIndex(index);
     setVisible(true);
   }
-  
+
+  //const [data, setData] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios(
-        'http://localhost:3000/',
-      );
- 
-      setData({
-        Location: result.data.Location, 
-        Title: result.data.Title,
-        Type: result.data.Type,
-        Tarif: result.data.Tarif,
-        Photo: result.data.Photo,
-        Description: result.data.Description,
+      const snapshot = await db.collection('products').get();
+      snapshot.forEach((doc) => {
+        console.log(doc.id, '=>', doc.data());
+        //setData({docs: doc.data()});
       });
-      console.log(data)
     };
  
     fetchData();
@@ -50,7 +52,7 @@ export const Page = ({displayedData} : Props) => {
     <>
       <Content style={{paddingTop: '10vh'}}>
         {/*A remplacer par data.map*/}
-        {displayedData.length > 0 ? displayedData.map((row, index) => {
+        {data.length > 0 ? data.map((row, index) => {
           if(row != null){
             return (
               <div className="listeRechercheBien" key={index}>
@@ -62,14 +64,14 @@ export const Page = ({displayedData} : Props) => {
             )}
             return null
           }) : <p>Aucun résultat trouvé</p>}
-        {visible && displayedData != null ?
+        {visible && data != null ?
           <Bien data={{
-            Location: displayedData[clickedIndex]?.Location, 
-            Title: displayedData[clickedIndex]?.Title,
-            Type: displayedData[clickedIndex]?.Type,
-            Tarif: displayedData[clickedIndex]?.Tarif,
-            Photo: displayedData[clickedIndex]?.Photo,
-            Description: displayedData[clickedIndex]?.Description,
+            Location: data[clickedIndex]?.Location, 
+            Title: data[clickedIndex]?.Title,
+            Type: data[clickedIndex]?.Type,
+            Tarif: data[clickedIndex]?.Tarif,
+            Photo: data[clickedIndex]?.Photo,
+            Description: data[clickedIndex]?.Description,
           }} visible={visible} setVisible={setVisible}/> :
           null
         }
