@@ -30,7 +30,7 @@ export const Page = ({displayedData} : Props) => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios(
-        'http://localhost:5000/',
+        'http://localhost:3000/',
       );
  
       setData({

@@ -32,7 +32,6 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
         <p>Tarif : {data.Tarif}</p>
         <p>Photo : {data.Photo}</p>
         <p>Description : {data.Description}</p>
-        
 
       </Modal>
     </>
