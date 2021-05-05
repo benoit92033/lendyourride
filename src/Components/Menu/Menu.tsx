@@ -69,7 +69,6 @@ export const MyMenu = ({setDiplayedData, data} : Props) => {
                 <Button type="primary" onClick={() => auth.signOut()}>
                   Déconnexion
                 </Button>
-                <button onClick={() => window.location.href='./ajoutAnnonce'}>Ajouter une annonce</button>
             </div>
             ) : 
               <Button style={{marginTop: '30px'}} type="primary" onClick={signInWithGoogle}>

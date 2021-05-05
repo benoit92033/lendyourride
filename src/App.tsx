@@ -7,7 +7,6 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { Chat } from './Components/Chat';
 import UserProvider from "./Providers/UserProvider";
 import { OmitProps } from 'antd/lib/transfer/ListBody';
-import { AjoutAnnonce } from './Components/ajoutAnnonce';
 import db from './firebase.js';
 
 function App() { 
@@ -38,10 +37,6 @@ function App() {
     )
   }
 
-  const ajoutAnnonceComponent = () => {
-    return <AjoutAnnonce />;
-  }
-
   const chatComponent = () => {
     return <Chat />;
   }
@@ -51,7 +46,6 @@ function App() {
       <Layout style={{height:'100vh'}}>
         <BrowserRouter>
           <Route exact path="/" component={pageComponent} />
-          <Route path="/ajoutAnnonce" component={ajoutAnnonceComponent} />
           <Route path="/chat" component={chatComponent} />
         </BrowserRouter>
       </Layout>

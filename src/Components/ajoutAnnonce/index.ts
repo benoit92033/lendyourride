@@ -1,1 +1,1 @@
-export { AjoutAnnonce } from './ajoutAnnonce';
+export { AjoutAnnonce } from './AjoutAnnonce';

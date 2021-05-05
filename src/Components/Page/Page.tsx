@@ -2,6 +2,7 @@ import { Button } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { AjoutAnnonce } from '../AjoutAnnonce';
 import { Bien } from '../Bien';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 export const Page = ({displayedData} : Props) => {
   const [visible, setVisible] = useState(false);
+  const [addBien, setAddBien] = useState(false);
   const [clickedIndex, setClickedIndex] = useState(1);
 
   function clickOnVisualisation(index: number) {
@@ -19,7 +21,11 @@ export const Page = ({displayedData} : Props) => {
 
   return (
     <>
-      <Content style={{paddingTop: '10vh', margin: '5%'}}>
+      <Content style={{paddingTop: '110px', marginLeft: '5%', marginRight: '5%'}}>
+        <div onClick={() => setAddBien(true)} className="btn-addBien">
+          Louer mon véhicule
+        </div>
+
         {displayedData.length > 0 ? displayedData.map((row, index) => {
           if(row != null){
             return (
@@ -42,6 +48,10 @@ export const Page = ({displayedData} : Props) => {
             ProductId: displayedData[clickedIndex]?.doc.productId,
           }} visible={visible} setVisible={setVisible}/> :
           null
+        }
+
+        {addBien ?
+          <AjoutAnnonce addBien={addBien} setAddBien={setAddBien}/> : null
         }
       </Content>
     </>
