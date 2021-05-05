@@ -2,12 +2,10 @@ import { Input, Menu } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-<<<<<<< HEAD
 import './menu.style.css';
 import logo from '../Images/logo.png';
-=======
 import { auth, signInWithGoogle } from '../../firebase';
->>>>>>> 7aeb14146f0be671169f2c91ee92fca1a56fdca4
+
 
 const { Search } = Input;
 interface Props {
