@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import './menu.style.css';
 import logo from '../Images/logo.png';
 import { auth, signInWithGoogle } from '../../firebase';
+import MenuItem from 'antd/lib/menu/MenuItem';
+
 
 
 const { Search } = Input;
@@ -72,6 +74,9 @@ export const MyMenu = ({setData, data} : Props) => {
                 </Menu.Item>
                 <Menu.Item key="2"/*icon={}*/>
                   <button onClick={() => auth.signOut()}>Déconnexion</button>
+                </Menu.Item>
+                <Menu.Item key="3"/*icon={}*/>
+                <button onClick={() => window.location.href='./ajoutAnnonce'}>Ajouter une annonce</button>
                 </Menu.Item>
               </div>
             ) : 

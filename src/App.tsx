@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { MyMenu } from './Components/Menu';
 import { Page } from './Components/Page';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { Login } from './Components/Login';
 import { Chat } from './Components/Chat';
 import UserProvider from "./Providers/UserProvider";
 import { OmitProps } from 'antd/lib/transfer/ListBody';
+import { AjoutAnnonce } from './Components/ajoutAnnonce';
 
 function App() { 
   const supoData = ([
@@ -39,8 +39,8 @@ function App() {
     )
   }
 
-  const loginComponent = () => {
-    return <Login setToken={setToken} />;
+  const ajoutAnnonceComponent = () => {
+    return <AjoutAnnonce />;
   }
 
   const chatComponent = () => {
@@ -52,7 +52,7 @@ function App() {
       <Layout style={{height:'100vh'}}>
         <BrowserRouter>
           <Route exact path="/" component={pageComponent} />
-          <Route path="/login" component={loginComponent} />
+          <Route path="/ajoutAnnonce" component={ajoutAnnonceComponent} />
           <Route path="/chat" component={chatComponent} />
         </BrowserRouter>
       </Layout>
