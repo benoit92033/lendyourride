@@ -39,7 +39,7 @@ export const Page = ({displayedData} : Props) => {
             Tarif: displayedData[clickedIndex]?.doc.tarif,
             Photo: displayedData[clickedIndex]?.doc.photo,
             Description: displayedData[clickedIndex]?.doc.description,
-            Id: displayedData[clickedIndex]?.doc._id,
+            ProductId: displayedData[clickedIndex]?.doc.productId,
           }} visible={visible} setVisible={setVisible}/> :
           null
         }

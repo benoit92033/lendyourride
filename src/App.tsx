@@ -18,7 +18,9 @@ function App() {
       let arr: Array<any>;
       arr = [];
       snapshot.forEach((doc) => {
-        arr.push({doc: doc.data()})
+        let product = doc.data()
+        product.productId = doc.id
+        arr.push({doc: product})
       });
       setDiplayedData(arr);
     };

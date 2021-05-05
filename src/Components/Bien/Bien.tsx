@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import db from '../../firebase.js';
 
 interface Props {
-  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, Id: number | undefined};
+  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: number | undefined};
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -12,21 +12,21 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
 
   const [avis, setData] = useState<any[]>([]);
 
+  const fetchData = async () => {
+    const snapshot = await db.collection('reviews')
+      .where('product', '==', data.ProductId)
+      .get();
+    let arr: Array<any>;
+    arr = [];
+    snapshot.forEach((doc) => {
+      let avis = doc.data()
+      avis.avisId = doc.id
+      arr.push({doc: avis})
+    });
+    setData(arr);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      console.log(data.Id)
-      const snapshot = await db.collection('reviews')
-        //.where('product._id', '==', data.Id)
-        .get();
-      let arr: Array<any>;
-      arr = [];
-      snapshot.forEach((doc) => {
-        arr.push({doc: doc.data()})
-      });
-      setData(arr);
-      console.log(arr)
-    };
- 
     fetchData();
   }, []);
 
@@ -34,6 +34,32 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
 
   const addAvis = (values: any) => {
     console.log("Success:", values);
+
+    db.collection('reviews').add({
+      contenu: values.content,
+      date: {
+        nanoseconds: 0,
+        seconds: Date.now() / 1000 | 0,
+      },
+      note: values.note,
+      product: data.ProductId,
+      status: "pending",
+      titre: values.title,
+      // user: user.id
+    }).then(()=> {
+      fetchData();
+    });
+
+    
+  };
+
+  const approveAvis = (avisId: any) => {
+    let doc = db.collection('reviews').doc(avisId);
+    doc.update({
+      status: 'approved'
+    }).then(()=> {
+      fetchData();
+    });
   };
 
   return (
@@ -64,20 +90,31 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
           <h2>Avis</h2>
           <Row>
             {avis.map(avi => {
-                if (avi.doc.status == "approved") {
-                var date = new Date(avi.doc.date.seconds * 1000);
-                var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
-                var year = date.getFullYear();
-                var month = months[date.getMonth()];
-                var day = date.getDate();
+              var date = new Date(avi.doc.date.seconds * 1000);
+              var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
+              var year = date.getFullYear();
+              var month = months[date.getMonth()];
+              var day = date.getDate();
+              if (avi.doc.status == "approved") {
                 return (
-                    <Col className="avis">
-                        <p>Date: {day + ' ' + month + ' ' + year}</p>
-                        <p>Titre: {avi.doc.titre}</p>
-                        <p>Contenu: {avi.doc.contenu}</p>
-                        <p>Note: {avi.doc.note}</p>
-                    </Col>);
-                }
+                  <Col className="avis">
+                      <p>Date: {day + ' ' + month + ' ' + year}</p>
+                      <p>Titre: {avi.doc.titre}</p>
+                      <p>Contenu: {avi.doc.contenu}</p>
+                      <p>Note: {avi.doc.note}</p>
+                  </Col>);
+              } else if (avi.doc.status == "pending") { //and ADMIN
+                return (
+                  <Col className="avisPending">
+                      <p>Date: {day + ' ' + month + ' ' + year}</p>
+                      <p>Titre: {avi.doc.titre}</p>
+                      <p>Contenu: {avi.doc.contenu}</p>
+                      <p>Note: {avi.doc.note}</p>
+                      <Button type="primary" onClick={() => approveAvis(avi.doc.avisId)}>
+                        Approuver
+                      </Button>
+                  </Col>);
+              }
             })}
             {showFormAvis ? 
               <Form onFinish={addAvis}>
@@ -87,8 +124,8 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                 <Form.Item label="Contenu :" name="content" rules={[{ required: true }]}>
                   <Input.TextArea />
                 </Form.Item>
-                <Form.Item label="Note :" rules={[{ required: true, min: 1, max: 5 }]}>
-                  <InputNumber />
+                <Form.Item label="Note :" name='note' rules={[{ required: true }]}>
+                  <InputNumber min={1} max={5} />
                 </Form.Item>
                 <Button style={{marginRight: '5px'}} onClick={() => setFormAvis(false)}>
                   Annuler

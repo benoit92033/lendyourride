@@ -30,3 +30,11 @@
     border-radius: 10px;
     padding: 5px;
 }
+
+.avisPending {
+    max-width: 250px;
+    background-color: #ffcc00;
+    margin: 5px;
+    border-radius: 10px;
+    padding: 5px;
+}
