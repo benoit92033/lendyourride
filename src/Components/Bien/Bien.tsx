@@ -1,20 +1,34 @@
-import { Button, Modal, Row, Form, Input, InputNumber } from 'antd';
+import { Button, Modal, Row, Form, Input, InputNumber, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Avis } from '../Avis';
+import db from '../../firebase.js';
 
 interface Props {
-  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined};
+  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, Id: number | undefined};
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Bien = ({ data, visible, setVisible }: Props) => {
 
-  const avis = ([
-    {Date: "01/05/2021", Title: "Mouais", Content: "C'est pas ouf", Note: 3},
-    {Date: "05/04/2021", Title: "Trop cool", Content: "Chanmé la bagnole des keufs", Note: 5},
-    {Date: "06/05/2021", Title: "Nul", Content: "Gneu gneu gneu c'est de la merde", Note: 1},
-  ])
+  const [avis, setData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log(data.Id)
+      const snapshot = await db.collection('reviews')
+        //.where('product._id', '==', data.Id)
+        .get();
+      let arr: Array<any>;
+      arr = [];
+      snapshot.forEach((doc) => {
+        arr.push({doc: doc.data()})
+      });
+      setData(arr);
+      console.log(arr)
+    };
+ 
+    fetchData();
+  }, []);
 
   const [showFormAvis, setFormAvis] = useState(false);
 
@@ -40,22 +54,30 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
         ]}
       >
         <p>Titre : {data.Title}</p>
+        <img src={data.Photo} alt="" width="400px" />
         <p>Localisation : {data.Location}</p>
         <p>Type : {data.Type}</p>
         <p>Tarif : {data.Tarif}</p>
-        <p>Photo : {data.Photo}</p>
         <p>Description : {data.Description}</p>
 
         <div>
           <h2>Avis</h2>
           <Row>
             {avis.map(avi => {
-              <Avis data={{ 
-                Date: avi.Date,
-                Title: avi.Title,
-                Content: avi.Content,
-                Note: avi.Note,
-              }}/>
+                if (avi.doc.status == "approved") {
+                var date = new Date(avi.doc.date.seconds * 1000);
+                var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
+                var year = date.getFullYear();
+                var month = months[date.getMonth()];
+                var day = date.getDate();
+                return (
+                    <Col className="avis">
+                        <p>Date: {day + ' ' + month + ' ' + year}</p>
+                        <p>Titre: {avi.doc.titre}</p>
+                        <p>Contenu: {avi.doc.contenu}</p>
+                        <p>Note: {avi.doc.note}</p>
+                    </Col>);
+                }
             })}
             {showFormAvis ? 
               <Form onFinish={addAvis}>
@@ -68,6 +90,9 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                 <Form.Item label="Note :" rules={[{ required: true, min: 1, max: 5 }]}>
                   <InputNumber />
                 </Form.Item>
+                <Button style={{marginRight: '5px'}} onClick={() => setFormAvis(false)}>
+                  Annuler
+                </Button>
                 <Button type="primary" htmlType="submit">
                   Ajouter
                 </Button>

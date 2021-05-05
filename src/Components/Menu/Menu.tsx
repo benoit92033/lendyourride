@@ -6,41 +6,22 @@ import { auth, signInWithGoogle } from '../../firebase';
 
 const { Search } = Input;
 interface Props {
-  data: {
-    Location: string;
-    Title: string;
-    Description: string;
-    Type: string;
-    Tarif: number; 
-    Photo: string;
-  }[];
-  setData: React.Dispatch<React.SetStateAction<({
-    Location: string;
-    Title: string;
-    Description: string;
-    Type: string;
-    Tarif: number; 
-    Photo: string;
-  }| null)[]>>;
+  data: Array<any>;
+  setDiplayedData: any;
 }
-export const MyMenu = ({setData, data} : Props) => {
+
+export const MyMenu = ({setDiplayedData, data} : Props) => {
 
   const recherche = (value: string) => {
-    let menuBien: (({
-      Location: string;
-      Title: string;
-      Description: string;
-      Type: string;
-      Tarif: number; 
-      Photo: string;
-    }| null)[]) = [];
+    let menuBien: Array<any>;
+    menuBien = [];
     data.map(function(row) {
-      if(value == null || row.Title.toUpperCase().includes(value.toUpperCase())){
+      if(value == null || row.doc.titre.toUpperCase().includes(value.toUpperCase())){
         menuBien.push(row)
       }
       return null;
     })
-    setData(menuBien);
+    setDiplayedData(menuBien);
   }
 
   const [state, setState] = useState<any>({currentUser: null});

@@ -22,3 +22,11 @@
     border-radius: 20px;
     font-weight: bold;
 }
+
+.avis {
+    max-width: 250px;
+    background-color: lightgray;
+    margin: 5px;
+    border-radius: 10px;
+    padding: 5px;
+}
