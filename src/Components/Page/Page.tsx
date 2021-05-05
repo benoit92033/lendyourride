@@ -5,58 +5,27 @@ import React, { useEffect, useState } from 'react';
 import { Bien } from '../Bien';
 
 interface Props {
-  displayedData: ({
-    Location: string;
-    Title: string;
-    Description: string;
-    Type: string;
-    Tarif: number; 
-    Photo: string;
-  }| null)[];
+  displayedData: Array<any>;
 }
 
 export const Page = ({displayedData} : Props) => {
   const [visible, setVisible] = useState(false);
   const [clickedIndex, setClickedIndex] = useState(1);
 
-  const [data, setData] = useState({ Location: "", Title: "",  Description:"", Type: "", Tarif: "",  Photo:""});
-  //A supp après l'api prête
-
   function clickOnVisualisation(index: number) {
     setClickedIndex(index);
     setVisible(true);
   }
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(
-        'http://localhost:5000/',
-      );
- 
-      setData({
-        Location: result.data.Location, 
-        Title: result.data.Title,
-        Type: result.data.Type,
-        Tarif: result.data.Tarif,
-        Photo: result.data.Photo,
-        Description: result.data.Description,
-      });
-      console.log(data)
-    };
- 
-    fetchData();
-  });
+
   return (
     <>
-      <Content style={{paddingTop: '10vh'}}>
-        {/*A remplacer par data.map*/}
+      <Content style={{paddingTop: '10vh', margin: '5%'}}>
         {displayedData.length > 0 ? displayedData.map((row, index) => {
           if(row != null){
             return (
               <div className="listeRechercheBien" key={index}>
-                {row?.Location} : {row?.Title}
-                <Button type="primary" onClick={() => clickOnVisualisation(index)} className="buttonVisu">
-                  Visualisation d'un bien
+                <Button type="primary" onClick={() => clickOnVisualisation(index)} className="buttonVisu" style={{backgroundImage: "url(" + row?.doc.photo + ")", backgroundSize: "cover"}}>
+                  <p className="titleBien">{row?.doc.localisation.ville} : {row?.doc.titre}</p>
                 </Button>
               </div>
             )}
@@ -64,12 +33,13 @@ export const Page = ({displayedData} : Props) => {
           }) : <p>Aucun résultat trouvé</p>}
         {visible && displayedData != null ?
           <Bien data={{
-            Location: displayedData[clickedIndex]?.Location, 
-            Title: displayedData[clickedIndex]?.Title,
-            Type: displayedData[clickedIndex]?.Type,
-            Tarif: displayedData[clickedIndex]?.Tarif,
-            Photo: displayedData[clickedIndex]?.Photo,
-            Description: displayedData[clickedIndex]?.Description,
+            Location: displayedData[clickedIndex]?.doc.localisation.ville, 
+            Title: displayedData[clickedIndex]?.doc.titre,
+            Type: displayedData[clickedIndex]?.doc.type,
+            Tarif: displayedData[clickedIndex]?.doc.tarif,
+            Photo: displayedData[clickedIndex]?.doc.photo,
+            Description: displayedData[clickedIndex]?.doc.description,
+            ProductId: displayedData[clickedIndex]?.doc.productId,
           }} visible={visible} setVisible={setVisible}/> :
           null
         }
