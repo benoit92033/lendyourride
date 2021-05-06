@@ -1,7 +1,6 @@
-import { Button, Checkbox, Form, Input, InputNumber, Modal, Upload, Select } from "antd";
-import { UploadOutlined, InboxOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Form, Input, InputNumber, Modal, Select } from "antd";
+import { DeleteOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
-import ImageUploader from 'react-images-upload';
 import { useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 
@@ -10,38 +9,43 @@ interface Props {
   setAddBien: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-/*function getBase64(img: any, callback: any) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}*/
-
 export const AjoutAnnonce = ({ addBien, setAddBien }: Props) => {
 
   const { Option } = Select;
 
   const onFinish = (values: any) => {
+    if (image != undefined) {
+      db.app.storage().ref('images/' + image.name).put(image).then(()=> {
+        db.app.storage().ref('images').child(image.name).getDownloadURL()
+        .then(fireBaseUrl => {
+          db.collection('products').add({
+            description: values.description,
+            localisation: {
+              ville: values.ville,
+            },
+            photo: fireBaseUrl,
+            tarif: values.prix,
+            titre: values.title,
+            type: values.type,
+          });
+        })
+      })
+      setAddBien(false);
+    } else {
 
-    console.log(images);
-
-    db.collection('products').add({
-      description: values.description,
-      localisation: {
-        ville: values.ville,
-      },
-      photo: "https://cdn.motor1.com/images/mgl/gp1Em/s1/land-rover-range-rover-sport-2021.jpg",
-      tarif: values.prix,
-      titre: values.title,
-      type: values.type,
-    });
-    setAddBien(false);
+    }
   };
 
+  const [image, setImage] = useState<File>();
   const [images, setImages] = useState([]);
   const maxNumber = 1;
 
   const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
-    console.log(imageList, addUpdateIndex);
+    if (imageList.length != 0) {
+      setImage(imageList[0].file as File);
+    } else {
+      setImage(undefined);
+    }
     setImages(imageList as never[]);
   };
 
@@ -82,23 +86,23 @@ export const AjoutAnnonce = ({ addBien, setAddBien }: Props) => {
           <span style={{margin: '5px'}} className="ant-form-text"> euros</span>
         </div>
       
-        <Form.Item name={'description'} label="Description">
+        <Form.Item name={'description'} label="Description" rules={[{ required: true }]}>
           <Input.TextArea />
         </Form.Item>
 
         <ImageUploading multiple value={images} onChange={onChange} maxNumber={maxNumber}>
           {({imageList, onImageUpload, onImageRemove, isDragging, dragProps}) => (
             <div className="upload__image-wrapper">
+              {imageList.length == 0 ?
               <button style={isDragging ? { color: "red" } : undefined} onClick={onImageUpload} {...dragProps}>
-                Cliquer ou glisser ici
-              </button>
-              &nbsp;
+                Cliquer pour ajouter une image ou glisser une image ici
+              </button> : null}
               {imageList.map((image, index) => (
                 <div key={index} className="image-item">
-                  <img src={image.dataURL} alt="" width="100" />
-                  <div className="image-item__btn-wrapper">
-                    <button onClick={() => onImageRemove(index)}>Supprimer la photo</button>
-                  </div>
+                  <img src={image.dataURL} alt="" />
+                  <Button className="image-btn-del" type="primary" danger onClick={() => onImageRemove(index)}>
+                    <DeleteOutlined />
+                  </Button>
                 </div>
               ))}
             </div>

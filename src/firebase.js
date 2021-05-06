@@ -6,6 +6,7 @@ import app from 'firebase/app';
 // Add the Firebase products that you want to use
 import "firebase/auth";
 import "firebase/firestore";
+import 'firebase/storage'
 
 const config = {
   apiKey: "AIzaSyBo3VSraMY2yrAqXXcxlls3cB8qtsFFIVg",
@@ -29,6 +30,9 @@ export const signInWithGoogle = () => {
   })
 }
 
+const storage = app.storage()
 const db = app.firestore();
 
-export default db;
+export {
+  storage, db as default
+}

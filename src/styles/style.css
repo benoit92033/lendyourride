@@ -65,3 +65,27 @@
     margin-bottom: 10px;
     border-radius: 20px;
 }
+
+.upload__image-wrapper > button {
+    width: 150px;
+    height: 150px;
+    background-color: lightgrey;
+    border: none;
+    border-radius: 15px;
+}
+
+.image-item > img {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.upload__image-wrapper {
+    margin: 10px;
+}
+
+.image-btn-del {
+    margin: 10px;
+    height: 45px;
+}
