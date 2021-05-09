@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { MyMenu } from './Components/Menu';
 import { Page } from './Components/Page';
 import { BrowserRouter, Route } from 'react-router-dom';
-import { Chat } from './Components/Chat';
 import UserProvider from "./Providers/UserProvider";
 import { OmitProps } from 'antd/lib/transfer/ListBody';
 import db from './firebase.js';
@@ -36,17 +35,12 @@ function App() {
       </div>
     )
   }
-
-  const chatComponent = () => {
-    return <Chat />;
-  }
   
   return (
     //<UserProvider>
       <Layout style={{height:'100vh'}}>
         <BrowserRouter>
           <Route exact path="/" component={pageComponent} />
-          <Route path="/chat" component={chatComponent} />
         </BrowserRouter>
       </Layout>
     //</UserProvider>

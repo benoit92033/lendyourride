@@ -49,15 +49,7 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
     }).then(()=> {
       fetchData();
     });
-  };
-
-  const approveAvis = (avisId: any) => {
-    let doc = db.collection('reviews').doc(avisId);
-    doc.update({
-      status: 'approved'
-    }).then(()=> {
-      fetchData();
-    });
+    setFormAvis(false);
   };
 
   const setReservation = (values: any) => {
@@ -95,13 +87,13 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
         {showFormReservation ?  
           <div>
             <h2>Réservation</h2>
-            <p>Tarif total : </p>
             <Form onFinish={setReservation}>
               <Form.Item label="Période de réservation :" name="date" rules={[{ required: true }]}>
                 <Space direction="vertical" size={12}>
                   <RangePicker />
                 </Space>
               </Form.Item>
+              <p>Tarif total : </p>
               <Button type="primary" htmlType="submit">
                 Valider
               </Button>
@@ -126,20 +118,26 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
                       </Col>);
-                  } else if (avi.doc.status == "pending") { //and is ADMIN
+                  } else if (avi.doc.status == "pending") { // TODO SI C'EST L'AVIS DE L'UTILISATEUR QUI LA ECRIT
                     return (
-                      <Col className="avisPending">
+                      <Col className="avis avisPending">
+                          <p style={{fontWeight: 'bold'}}>Votre avis est en attente d'approbation</p>
                           <p>Date: {day + ' ' + month + ' ' + year}</p>
                           <p>Titre: {avi.doc.titre}</p>
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
-                          <Button type="primary" onClick={() => approveAvis(avi.doc.avisId)}>
-                            Approuver
-                          </Button>
+                      </Col>);
+                  } else if (avi.doc.status == "refused") { // TODO SI C'EST L'AVIS DE L'UTILISATEUR QUI LA ECRIT
+                    return (
+                      <Col className="avis avisRefused">
+                          <p style={{fontWeight: 'bold'}}>Votre avis a été refusé</p>
+                          <p>Date: {day + ' ' + month + ' ' + year}</p>
+                          <p>Titre: {avi.doc.titre}</p>
+                          <p>Contenu: {avi.doc.contenu}</p>
+                          <p>Note: {avi.doc.note}</p>
                       </Col>);
                   }
-                }) : 
-                <p style={{marginRight: "10px"}}>Aucun avis pour ce bien.</p> }
+                }) : <p style={{marginRight: "10px"}}>Aucun avis pour ce bien.</p> }
               {showFormAvis ? 
                 <Form onFinish={addAvis}>
                   <Form.Item label="Titre :" name="title" rules={[{ required: true }]}>

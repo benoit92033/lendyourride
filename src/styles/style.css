@@ -31,12 +31,14 @@
     padding: 5px;
 }
 
+.avisRefused {
+    color: #721c24;
+    background-color: #f8d7da  !important;
+}
+
 .avisPending {
-    max-width: 250px;
-    background-color: #ffcc00;
-    margin: 5px;
-    border-radius: 10px;
-    padding: 5px;
+    color: #856404;
+    background-color: #fff3cd !important;
 }
 
 .imgBien {
@@ -57,11 +59,24 @@
     text-align: center;
     background-color: #007bff;
     color: white;
+    width: 50%;
+    display: block;
+    font-size: 25px;
+    font-weight: bold;
+    padding: 40px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+}
+
+.btn-admin {
+    text-align: center;
+    background-color: #dc3545;
+    color: white;
     width: 100%;
     display: block;
     font-size: 25px;
     font-weight: bold;
-    padding: 50px;
+    padding: 10px;
     margin-bottom: 10px;
     border-radius: 20px;
 }
@@ -88,4 +103,28 @@
 .image-btn-del {
     margin: 10px;
     height: 45px;
+}
+
+.chat {
+    border-radius: 15px;
+    height: 500px;
+    max-height: 600px;
+    width: 400px;
+    max-width: 400px;
+    background-color: white;
+    position: fixed;
+    bottom: 30px; right: 30px;
+}
+
+.buttonChat {
+    position: fixed;
+    width: 75px;
+    height: 75px;
+    border-radius: 15px;
+    bottom: 30px; right: 30px;
+}
+
+.chatForm {
+    position: absolute;
+    bottom: 10px;
 }

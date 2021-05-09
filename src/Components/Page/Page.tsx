@@ -1,9 +1,12 @@
-import { Button } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
-import axios from 'axios';
+import { WechatOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { AjoutAnnonce } from '../AjoutAnnonce';
 import { Bien } from '../Bien';
+import { Chat } from '../Chat';
+import { Admin } from '../Admin';
+import { User } from '../User';
 
 interface Props {
   displayedData: Array<any>;
@@ -12,6 +15,10 @@ interface Props {
 export const Page = ({displayedData} : Props) => {
   const [visible, setVisible] = useState(false);
   const [addBien, setAddBien] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const [chat, setChat] = useState(false);
+  const [user, setUser] = useState(false);
+
   const [clickedIndex, setClickedIndex] = useState(1);
 
   function clickOnVisualisation(index: number) {
@@ -22,8 +29,18 @@ export const Page = ({displayedData} : Props) => {
   return (
     <>
       <Content style={{paddingTop: '110px', marginLeft: '5%', marginRight: '5%'}}>
-        <div onClick={() => setAddBien(true)} className="btn-addBien">
-          Louer mon véhicule
+        <div style={{display: 'flex'}}>
+          <div onClick={() => setAddBien(true)} className="btn-addBien" style={{marginRight: '15px'}}>
+            Mettre mon véhicule en location
+          </div>
+          <div onClick={() => setUser(true)} className="btn-addBien">
+            Mon compte
+          </div>
+        </div>
+        
+
+        <div onClick={() => setAdmin(true)} className="btn-admin">
+          Admin
         </div>
 
         {displayedData.length > 0 ? displayedData.map((row, index) => {
@@ -52,6 +69,21 @@ export const Page = ({displayedData} : Props) => {
 
         {addBien ?
           <AjoutAnnonce addBien={addBien} setAddBien={setAddBien}/> : null
+        }
+
+        {admin ?
+          <Admin admin={admin} setAdmin={setAdmin}/> : null
+        }
+
+        {user ?
+          <User user={user} setUser={setUser}/> : null
+        }
+
+        <Button type="primary" onClick={() => setChat(true)} className="buttonChat" >
+          <WechatOutlined style={{fontSize: '40px'}}/>
+        </Button>
+        {chat ?
+          <Chat setChat={setChat}/> : null
         }
       </Content>
     </>

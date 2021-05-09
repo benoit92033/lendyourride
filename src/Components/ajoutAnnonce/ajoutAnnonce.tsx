@@ -40,7 +40,7 @@ export const AjoutAnnonce = ({ addBien, setAddBien }: Props) => {
   const [images, setImages] = useState([]);
   const maxNumber = 1;
 
-  const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
+  const onChange = (imageList: ImageListType) => {
     if (imageList.length != 0) {
       setImage(imageList[0].file as File);
     } else {
@@ -95,7 +95,7 @@ export const AjoutAnnonce = ({ addBien, setAddBien }: Props) => {
             <div className="upload__image-wrapper">
               {imageList.length == 0 ?
               <button style={isDragging ? { color: "red" } : undefined} onClick={onImageUpload} {...dragProps}>
-                Cliquer pour ajouter une image ou glisser une image ici
+                Cliquez pour ajouter une image ou glisser une image ici
               </button> : null}
               {imageList.map((image, index) => (
                 <div key={index} className="image-item">

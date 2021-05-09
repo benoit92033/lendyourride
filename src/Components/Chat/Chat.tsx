@@ -4,16 +4,16 @@ import Pusher_JS from 'pusher-js';
 import { Button, Checkbox, Form, Input, message, Modal } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import axios from 'axios';
+import { DownOutlined } from '@ant-design/icons';
 
 interface Props {
-
+  setChat: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Chat = () => {
+export const Chat = ({ setChat }: Props) => {
 
-  const [messages, setMessages] = useState<string[]>([]);
-  console.log(messages)
-  // Use effect is called only after mounting. 
+  const [messages, setMessages] = useState<any[]>([]);
+
   useEffect(() => {
     //Pusher_JS.logToConsole = true;
 
@@ -23,7 +23,11 @@ export const Chat = () => {
   
     var channel = pusher_JS.subscribe('channel-test');
     channel.bind('message', (data:any) => {
-      setMessages([...messages, data.message.message]);
+      let arr: Array<any>;
+      arr = messages;
+      arr.push(data.message.message);
+      setMessages(arr);
+      console.log(messages);
     });
   }, []);
 
@@ -55,33 +59,29 @@ export const Chat = () => {
 
   return (
     <>
-      <p>CHAT</p>
-      <Content style={{paddingTop: '10vh'}}>
+      <div className="chat">
+        <div style={{backgroundColor: '#007bff', color: 'white', borderRadius: '15px 15px 0px 0px', padding: '2px'}}>
+          <p style={{margin: '10px', fontSize: '20px'}}>Chat</p>
+          <DownOutlined style={{position: 'absolute', top: '20px', right: '20px', fontSize: '20px'}} onClick={() => setChat(false)}/>
+        </div>
+        <div style={{display: 'block'}}>
         {messages.map(message => {
-            return (<p style={{margin: '2em'}}>{message}</p>)
+            console.log('called')
+            return (<p style={{margin: '10px', padding: '3px', backgroundColor: 'lightgray', borderRadius: '5px'}}>{message}</p>)
           })}
-      </Content>
-      <Content style={{position: 'absolute', width:'500px', margin:'auto', padding:0, top:'90%'}}>
-        <Form
-          name="basic"
-          onFinish={sendMessage}
-          //onFinishFailed={onFinishFailed}
-        >
-          <Form.Item
-            label="Type message"
-            name="message"
-            rules={[{ message: 'You can send a message here!' }]}
-          >
+        </div>
+        <Form onFinish={sendMessage} className="chatForm" style={{display: 'flex'}}>
+          <Form.Item name="message" style={{marginLeft: '10px', width: '275px' }}>
             <Input />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" style={{marginLeft: '10px'}}>
               Envoyer
             </Button>
           </Form.Item>
         </Form>
-      </Content>
+      </div>
     </>
   );
 };
