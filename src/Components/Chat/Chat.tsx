@@ -5,43 +5,13 @@ import { Button, Checkbox, Form, Input, message, Modal } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import axios from 'axios';
 import { DownOutlined } from '@ant-design/icons';
+import db from '../../firebase.js';
 
 interface Props {
   setChat: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Chat = ({ setChat }: Props) => {
-
-  const [messages, setMessages] = useState<any[]>([]);
-
-  useEffect(() => {
-    //Pusher_JS.logToConsole = true;
-
-    var pusher_JS = new Pusher_JS('0eb480c8f3021ab3a60e', {
-      cluster: 'eu'
-    });
-  
-    var channel = pusher_JS.subscribe('channel-test');
-    channel.bind('message', (data:any) => {
-      let arr: Array<any>;
-      arr = messages;
-      arr.push(data.message.message);
-      setMessages(arr);
-      console.log(messages);
-    });
-  }, []);
-
-  useEffect(() => {
-    /*const fetchData = async () => {
-      const result = await axios(
-        'http://localhost:5000/',
-      );
- 
-      setMessages([result.data.messages,]);
-    };*/
- 
-    //fetchData();
-  });
 
   const pusher = new Pusher({
     appId: "1180093",
@@ -50,12 +20,50 @@ export const Chat = ({ setChat }: Props) => {
     cluster: "eu",
     useTLS: true
   });
-  
-  const sendMessage = (message: string) => {
-    pusher.trigger("channel-test", "message", {
-      message
+
+  const [messages, setMessages] = useState<any[]>([]);
+
+  const fetchData = async () => {
+    const snapshot = await db.collection('messages').orderBy("timestamp").get();
+    let arr: Array<any>;
+    arr = [];
+    snapshot.forEach((doc) => {
+      arr.push({doc: doc.data()})
     });
+    setMessages(arr);
+  };
+
+  useEffect(() => {
+    //Pusher_JS.logToConsole = true;
+
+    fetchData();
+
+    var pusher_JS = new Pusher_JS('0eb480c8f3021ab3a60e', {
+      cluster: 'eu'
+    });
+  
+    var channel = pusher_JS.subscribe('channel-test');
+    channel.bind('message', () => {
+      fetchData();
+    });
+  }, []);
+  
+  const sendMessage = (values: any) => {
+    db.collection('messages').add({
+      content: values.message,
+      timestamp: Date.now(),
+      // sender: user.id
+      // receiver: user.id
+    }).then(()=> {
+      fetchData();
+    });
+
+    pusher.trigger("channel-test", "message", {});
+
+    form.resetFields();
   }
+
+  const [form] = Form.useForm();
 
   return (
     <>
@@ -66,11 +74,12 @@ export const Chat = ({ setChat }: Props) => {
         </div>
         <div style={{display: 'block'}}>
         {messages.map(message => {
-            console.log('called')
-            return (<p style={{margin: '10px', padding: '3px', backgroundColor: 'lightgray', borderRadius: '5px'}}>{message}</p>)
+            return (
+                <p style={{margin: '10px', padding: '3px 10px 3px 10px', backgroundColor: 'lightgray', borderRadius: '5px', width: 'fit-content' }}>{message.doc.content}</p>
+              );
           })}
         </div>
-        <Form onFinish={sendMessage} className="chatForm" style={{display: 'flex'}}>
+        <Form onFinish={sendMessage} form={form} className="chatForm" style={{display: 'flex'}}>
           <Form.Item name="message" style={{marginLeft: '10px', width: '275px' }}>
             <Input />
           </Form.Item>

@@ -56,6 +56,9 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
     console.log("Success:", values);
   };
 
+  const dateChange = (date: any) => {
+  };
+
   return (
     <>
       <Modal
@@ -88,9 +91,9 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
           <div>
             <h2>Réservation</h2>
             <Form onFinish={setReservation}>
-              <Form.Item label="Période de réservation :" name="date" rules={[{ required: true }]}>
+              <Form.Item label="Période de réservation :">
                 <Space direction="vertical" size={12}>
-                  <RangePicker />
+                  <RangePicker name="date" onChange={(date) => dateChange(date)}/>
                 </Space>
               </Form.Item>
               <p>Tarif total : </p>
