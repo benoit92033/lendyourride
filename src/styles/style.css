@@ -121,7 +121,8 @@
     width: 75px;
     height: 75px;
     border-radius: 15px;
-    bottom: 30px; right: 30px;
+    bottom: 10vh; right: 30px;
+    
 }
 
 .chatForm {
