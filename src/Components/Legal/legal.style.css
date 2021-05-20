@@ -1,5 +1,17 @@
-#CGU{
+#CGU {
     padding-left: 15%;
     padding-right: 15%;
-    text-align:justify
+    margin-top:12vh;
+    text-align: justify
+}
+
+.header {
+    text-align: center;
+    font-weight: bold;
+    position: fixed;
+    z-index: 1;
+    width: 100vw;
+    height: 12vh;
+    padding: 0;
+
 }

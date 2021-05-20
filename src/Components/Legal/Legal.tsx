@@ -5,7 +5,7 @@ export const Legal = () => {
   const { Header, Footer, Content } = Layout;
   return (
     <>
-      <Header className="header"><p>Condition générales d'utilisation</p></Header>
+      <Header  className="header"><p>Condition générales d'utilisation</p></Header>
       <Content id="CGU">
         <Link to="/" className="btn">
           Retour
