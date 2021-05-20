@@ -7,6 +7,7 @@ import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import { Admin } from '../Admin';
 import { User } from '../User';
+import { Footer } from '../Footer';
 
 interface Props {
   displayedData: Array<any>;
@@ -86,6 +87,8 @@ export const Page = ({displayedData} : Props) => {
           <Chat setChat={setChat}/> : null
         }
       </Content>
+      <Footer />
+
     </>
   );
 };
