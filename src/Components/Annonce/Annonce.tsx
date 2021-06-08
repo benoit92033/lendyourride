@@ -9,7 +9,7 @@ interface Props {
   setAddBien: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const AjoutAnnonce = ({ addBien, setAddBien }: Props) => {
+export const Annonce = ({ addBien, setAddBien }: Props) => {
 
   const { Option } = Select;
 

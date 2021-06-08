@@ -3,7 +3,7 @@ import { Content } from 'antd/lib/layout/layout';
 
 import { WechatOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { AjoutAnnonce } from '../AjoutAnnonce';
+import { Annonce } from '../Annonce';
 import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import { Admin } from '../Admin';
@@ -69,7 +69,7 @@ export const Page = ({displayedData} : Props) => {
         }
 
         {addBien ?
-          <AjoutAnnonce addBien={addBien} setAddBien={setAddBien}/> : null
+          <Annonce addBien={addBien} setAddBien={setAddBien}/> : null
         }
 
         {admin ?
