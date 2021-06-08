@@ -1,19 +1,22 @@
 import { Button, Form, Input, InputNumber, Modal, Select } from "antd";
 import { DeleteOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
 
 interface Props {
   addBien : boolean;
+  updateBien: Promise<void> | undefined;
+  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: string | undefined} | undefined;
   setAddBien: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Annonce = ({ addBien, setAddBien }: Props) => {
+export const Annonce = ({ updateBien, addBien, setAddBien, data }: Props) => {
 
   const { Option } = Select;
 
   const onFinish = (values: any) => {
+    console.log(values);
     if (image != undefined) {
       db.app.storage().ref('images/' + image.name).put(image).then(()=> {
         db.app.storage().ref('images').child(image.name).getDownloadURL()
@@ -31,13 +34,24 @@ export const Annonce = ({ addBien, setAddBien }: Props) => {
         })
       })
       setAddBien(false);
-    } else {
-
+    } else if (data != undefined) {
+      db.collection('products').doc(data.ProductId).update({
+        description: values.description,
+        localisation: {
+          ville: values.ville,
+        },
+        tarif: values.prix,
+        titre: values.title,
+        type: values.type,
+      });
+      setAddBien(false);
+      //updateBien;
     }
   };
 
   const [image, setImage] = useState<File>();
   const [images, setImages] = useState([]);
+  const [edit, setEdit] = useState(false);
   const maxNumber = 1;
 
   const onChange = (imageList: ImageListType) => {
@@ -48,6 +62,18 @@ export const Annonce = ({ addBien, setAddBien }: Props) => {
     }
     setImages(imageList as never[]);
   };
+
+  useEffect(() => {
+    if (data != undefined) {
+      setEdit(true)
+      if (data.Photo != undefined) {
+        let image = {
+          dataURL: data.Photo
+        }
+        setImages([image] as never[]);
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -63,12 +89,20 @@ export const Annonce = ({ addBien, setAddBien }: Props) => {
           </Button>,
         ]}
       >
-      <Form className="formAddBien" name="nest-messages" onFinish={onFinish}>
+      <Form className="formAddBien" name="nest-messages" onFinish={onFinish} 
+        initialValues={{
+          title: data?.Title,
+          type: data?.Type,
+          prix: data?.Tarif,
+          description: data?.Description,
+          ville: data?.Location,
+        }}
+      >
         <Form.Item name={'title'} label="Titre" rules={[{ required: true }]}>
-          <Input />
+          <Input defaultValue={data?.Title} />
         </Form.Item>
         <Form.Item name={'type'} label="Type de véhicule" rules={[{ required: true }]}>
-          <Select style={{ width: 120 }}>
+          <Select defaultValue={data?.Type} style={{ width: 120 }}>
             <Option value="Voiture">Voiture</Option>
             <Option value="Moto">Moto</Option>
             <Option value="Caravane">Caravane</Option>
@@ -76,18 +110,18 @@ export const Annonce = ({ addBien, setAddBien }: Props) => {
           </Select>
         </Form.Item>
         <Form.Item name={'ville'} label="Ville" rules={[{ required: true }]}>
-          <Input />
+          <Input defaultValue={data?.Location} />
         </Form.Item>
         
         <div style={{display: 'flex'}}>
           <Form.Item label="Prix :" name='prix' rules={[{ required: true }]}>
-            <InputNumber min={0} />
+            <InputNumber defaultValue={data?.Tarif} min={0} />
           </Form.Item>
           <span style={{margin: '5px'}} className="ant-form-text"> euros</span>
         </div>
       
         <Form.Item name={'description'} label="Description" rules={[{ required: true }]}>
-          <Input.TextArea />
+          <Input.TextArea defaultValue={data?.Description} />
         </Form.Item>
 
         <ImageUploading multiple value={images} onChange={onChange} maxNumber={maxNumber}>
@@ -110,9 +144,14 @@ export const Annonce = ({ addBien, setAddBien }: Props) => {
         </ImageUploading>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Publier
-          </Button>
+          {edit ?
+            <Button type="primary" htmlType="submit">
+              Editer
+            </Button> : 
+            <Button type="primary" htmlType="submit">
+              Publier
+            </Button> 
+          }
         </Form.Item>
       </Form>
       </Modal>

@@ -69,7 +69,7 @@ export const Page = ({displayedData} : Props) => {
         }
 
         {addBien ?
-          <Annonce addBien={addBien} setAddBien={setAddBien}/> : null
+          <Annonce addBien={addBien} setAddBien={setAddBien} updateBien={undefined} data={undefined}/> : null
         }
 
         {admin ?
