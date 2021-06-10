@@ -68,7 +68,7 @@ export const Admin = ({ admin, setAdmin }: Props) => {
                     var day = date.getDate();
                     return(
                         <Col className="avis">
-                            <p>Date: {day + ' ' + month + ' ' + year}</p>
+                            <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
                             <p>Titre: {avi.doc.titre}</p>
                             <p>Contenu: {avi.doc.contenu}</p>
                             <p>Note: {avi.doc.note}</p>

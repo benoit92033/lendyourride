@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import db from '../../firebase.js';
 
 interface Props {
-  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: number | undefined, User: string | undefined};
+  data: any;
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   cUser: any;
@@ -58,7 +58,10 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
       },
       status: "pending",
       titre: values.title,
-      user: cUser.currentUser.private.email,
+      user: {
+        email: cUser.currentUser.private.email,
+        prenom: cUser.currentUser.public.prenom,
+      }
     }).then(()=> {
       fetchData();
     });
@@ -70,8 +73,14 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
 
   const setReservation = () => {
     db.collection('sales').add({
-      buyer: cUser.currentUser.private.email,
-      seller: data.User,
+      buyer: {
+        email: cUser.currentUser.private.email,
+        prenom: cUser.currentUser.public.prenom,
+      },
+      seller: {
+        email: data.User.email,
+        prenom: data.User.prenom,
+      },
       date: {
         nanoseconds: 0,
         seconds: Date.now() / 1000 | 0,
@@ -119,6 +128,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
       >
         <div style={{display: "flex", marginBottom: "50px"}}>
           <div className="descBien">
+            <p><b>Vendeur :</b> {data.User.prenom}</p>
             <p><b>Localisation :</b> {data.Location}</p>
             <p><b>Type :</b> {data.Type}</p>
             <p><b>Tarif :</b> {data.Tarif} €</p>
@@ -162,7 +172,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                   if (avi.doc.status == "approved") {
                     return (
                       <Col className="avis">
-                          <p>Date: {day + ' ' + month + ' ' + year}</p>
+                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
                           <p>Titre: {avi.doc.titre}</p>
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
@@ -171,7 +181,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                     return (
                       <Col className="avis avisPending">
                           <p style={{fontWeight: 'bold'}}>Votre avis est en attente d'approbation</p>
-                          <p>Date: {day + ' ' + month + ' ' + year}</p>
+                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
                           <p>Titre: {avi.doc.titre}</p>
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
@@ -180,7 +190,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                     return (
                       <Col className="avis avisRefused">
                           <p style={{fontWeight: 'bold'}}>Votre avis a été refusé</p>
-                          <p>Date: {day + ' ' + month + ' ' + year}</p>
+                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
                           <p>Titre: {avi.doc.titre}</p>
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>

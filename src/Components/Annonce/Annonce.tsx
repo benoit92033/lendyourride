@@ -43,7 +43,10 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
         tarif: values.prix,
         titre: values.title,
         type: values.type,
-        user: cUser.currentUser.private.email,
+        user: {
+          email: cUser.currentUser.private.email,
+          prenom: cUser.currentUser.public.prenom,
+        },
       });
       setAddBien(false);
     }

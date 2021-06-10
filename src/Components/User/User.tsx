@@ -30,7 +30,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
 
   const fetchData = async () => {
     if (cUser != false) {
-      const productsSnapshot = await db.collection('products').where('user', '==', cUser.currentUser.private.email).get();
+      const productsSnapshot = await db.collection('products').where('user.email', '==', cUser.currentUser.private.email).get();
       let arr: Array<any>;
       arr = [];
       productsSnapshot.forEach((doc) => {
@@ -40,7 +40,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
       });
       setBien(arr);
 
-      const mySalesSnapshot = await db.collection('sales').where('buyer', '==', cUser.currentUser.private.email).get();
+      const mySalesSnapshot = await db.collection('sales').where('buyer.email', '==', cUser.currentUser.private.email).get();
       arr = [];
       mySalesSnapshot.forEach((doc) => {
         let sale = doc.data()
@@ -49,7 +49,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
       });
       setMyRent(arr);
 
-      const salesSnapshot = await db.collection('sales').where('seller', '==', cUser.currentUser.private.email).get();
+      const salesSnapshot = await db.collection('sales').where('seller.email', '==', cUser.currentUser.private.email).get();
       arr = [];
       salesSnapshot.forEach((doc) => {
         let sale = doc.data()
@@ -58,7 +58,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
       });
       setBienRent(arr);
 
-      const avisSnapshot = await db.collection('reviews').where('user', '==', cUser.currentUser.private.email).get();
+      const avisSnapshot = await db.collection('reviews').where('user.email', '==', cUser.currentUser.private.email).get();
       arr = [];
       avisSnapshot.forEach((doc) => {
         let avis = doc.data()
@@ -135,7 +135,10 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                           Photo: bien.doc.photo,
                           Description: bien.doc.description,
                           ProductId: bien.doc.bienId,
-                          User: bien.doc.user,
+                          User: {
+                            email: bien.doc.user.email,
+                            prenom: bien.doc.user.prenom,
+                          },
                         }} visible={visible} setVisible={setVisible}/> :
                         null
                       }
@@ -172,7 +175,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                   var endDate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
                   return (
                     <Row className="tablebien">
-                      <span style={{width: '300px'}}>{rent.doc.product.titre}</span>
+                      <span style={{width: '300px'}}>{rent.doc.product.titre + ' de ' + rent.doc.seller.prenom}</span>
                       <span style={{width: '400px'}}>Dates : du {startDate} au {endDate}</span>
                       <span onClick={() => delSale(rent.doc.saleId)} style={{color: 'red'}}><DeleteOutlined/></span>
                     </Row>);

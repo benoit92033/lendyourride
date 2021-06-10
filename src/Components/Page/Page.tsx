@@ -95,7 +95,10 @@ export const Page = () => {
             Photo: displayedData[clickedIndex]?.doc.photo,
             Description: displayedData[clickedIndex]?.doc.description,
             ProductId: displayedData[clickedIndex]?.doc.productId,
-            User: displayedData[clickedIndex]?.doc.user,
+            User: {
+              email: displayedData[clickedIndex]?.doc.user.email,
+              prenom: displayedData[clickedIndex]?.doc.user.prenom,
+            },
           }} visible={visible} setVisible={setVisible} cUser={cUser}/> :
           null
         }
