@@ -40,7 +40,6 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
   }, []);
 
   const delBien = (bienId: any) => {
-    console.log(bienId);
     db.collection('products').doc(bienId).delete().then(()=> {
       fetchData();
     });
@@ -80,7 +79,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                   <span onClick={() => {setEditBien(true); setSeeBien(bien.doc.bienId) }} style={{color: '#007bff'}}><EditOutlined/></span>
                   <span onClick={() => delBien(bien.doc.bienId)} style={{color: 'red'}}><DeleteOutlined/></span>
                   {seeBien && bien.doc.bienId == seeBien ?
-                    <Bien data={{
+                    <Bien cUser={cUser} data={{
                       Location: bien.doc.localisation.ville, 
                       Title: bien.doc.titre,
                       Type: bien.doc.type,
@@ -93,7 +92,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                   }
 
                   {editBien && bien.doc.bienId == seeBien ? 
-                    <Annonce addBien={editBien} setAddBien={setEditBien} updateBien={fetchData()}
+                    <Annonce addBien={editBien} setAddBien={setEditBien} cUser={cUser}
                       data={{
                         Location: bien.doc.localisation.ville, 
                         Title: bien.doc.titre,

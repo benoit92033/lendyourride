@@ -6,12 +6,14 @@ interface Props {
   data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: number | undefined};
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  cUser: any;
 }
 
-export const Bien = ({ data, visible, setVisible }: Props) => {
+export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
 
   const { RangePicker } = DatePicker;
   const [avis, setData] = useState<any[]>([]);
+  const [userLoged, setUserLoged] = useState(false);
 
   const fetchData = async () => {
     const snapshot = await db.collection('reviews')
@@ -29,6 +31,9 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
 
   useEffect(() => {
     fetchData();
+    if (cUser.currentUser != null) {
+      setUserLoged(true);
+    }
   }, []);
 
   const [showFormAvis, setFormAvis] = useState(false);
@@ -45,7 +50,7 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
       product: data.ProductId,
       status: "pending",
       titre: values.title,
-      // user: user.id
+      user: cUser.currentUser.private.email,
     }).then(()=> {
       fetchData();
     });
@@ -57,6 +62,7 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
   };
 
   const dateChange = (date: any) => {
+    
   };
 
   return (
@@ -71,10 +77,11 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
           <Button key="back" onClick={() => setVisible(false)}>
             Retour
           </Button>,
+          userLoged ?
           !showFormReservation ?
           <Button key="submit" type="primary" onClick={() => setFormReservation(true)}>
             Réserver
-          </Button> : null,
+          </Button> : null : null
         ]}
       >
         <div style={{display: "flex", marginBottom: "50px"}}>
@@ -121,7 +128,7 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
                       </Col>);
-                  } else if (avi.doc.status == "pending") { // TODO SI C'EST L'AVIS DE L'UTILISATEUR QUI LA ECRIT
+                  } else if (avi.doc.status == "pending" && userLoged && cUser.currentUser.private.email == avi.doc.user) {
                     return (
                       <Col className="avis avisPending">
                           <p style={{fontWeight: 'bold'}}>Votre avis est en attente d'approbation</p>
@@ -130,7 +137,7 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
                       </Col>);
-                  } else if (avi.doc.status == "refused") { // TODO SI C'EST L'AVIS DE L'UTILISATEUR QUI LA ECRIT
+                  } else if (avi.doc.status == "refused" && userLoged && cUser.currentUser.private.email == avi.doc.user) {
                     return (
                       <Col className="avis avisRefused">
                           <p style={{fontWeight: 'bold'}}>Votre avis a été refusé</p>
@@ -159,9 +166,10 @@ export const Bien = ({ data, visible, setVisible }: Props) => {
                     Ajouter
                   </Button>
                 </Form> : 
+                userLoged ?
                 <Button type="primary" key="submit" onClick={() => setFormAvis(true) }>
                   Rediger un avis
-                </Button>}
+                </Button> : null}
             </Row>
           </div>
         }

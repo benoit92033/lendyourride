@@ -28,11 +28,9 @@ export const auth = app.auth();
 const googleProvider = new app.auth.GoogleAuthProvider()
 export const signInWithGoogle = () => {
   auth.signInWithPopup(googleProvider).then((res) => {
-    console.log(res.user)
     let user = res.user;
     if (user != undefined) {
       db.collection('users').where('private.email', '==', user?.email).get().then(snapshot => {
-        console.log(snapshot);
         if (snapshot.empty) {
           db.collection('users').add({
             admin: false,

@@ -141,3 +141,15 @@
     margin-right: 30px;
     font-size: 20px ;
 }
+
+
+
+/* FOOTER */
+.footer{
+    margin-top: 10px;
+    padding: 1rem;
+    background-color: #001529;
+}
+Content #CGU{
+    text-align:justify;
+}

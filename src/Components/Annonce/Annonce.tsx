@@ -6,17 +6,16 @@ import ImageUploading, { ImageListType } from "react-images-uploading";
 
 interface Props {
   addBien : boolean;
-  updateBien: Promise<void> | undefined;
   data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: string | undefined} | undefined;
   setAddBien: React.Dispatch<React.SetStateAction<boolean>>;
+  cUser: any;
 }
 
-export const Annonce = ({ updateBien, addBien, setAddBien, data }: Props) => {
+export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
 
   const { Option } = Select;
 
   const onFinish = (values: any) => {
-    console.log(values);
     if (image != undefined) {
       db.app.storage().ref('images/' + image.name).put(image).then(()=> {
         db.app.storage().ref('images').child(image.name).getDownloadURL()
@@ -30,6 +29,7 @@ export const Annonce = ({ updateBien, addBien, setAddBien, data }: Props) => {
             tarif: values.prix,
             titre: values.title,
             type: values.type,
+            user: cUser.currentUser.private.email,
           });
         })
       })
@@ -43,9 +43,9 @@ export const Annonce = ({ updateBien, addBien, setAddBien, data }: Props) => {
         tarif: values.prix,
         titre: values.title,
         type: values.type,
+        user: cUser.currentUser.private.email,
       });
       setAddBien(false);
-      //updateBien;
     }
   };
 

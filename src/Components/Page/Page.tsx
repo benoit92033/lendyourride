@@ -49,7 +49,6 @@ export const Page = () => {
   }, []);
 
   const renderUserButtons = () => {
-    console.log(cUser);
     if (cUser.currentUser != null && cUser.currentUser?.private.email != false) {
       return <UserButtons setMyAccount={setMyAccount} setAddBien={setAddBien}/>
     }
@@ -88,12 +87,12 @@ export const Page = () => {
             Photo: displayedData[clickedIndex]?.doc.photo,
             Description: displayedData[clickedIndex]?.doc.description,
             ProductId: displayedData[clickedIndex]?.doc.productId,
-          }} visible={visible} setVisible={setVisible}/> :
+          }} visible={visible} setVisible={setVisible} cUser={cUser}/> :
           null
         }
 
         {addBien ?
-          <Annonce addBien={addBien} setAddBien={setAddBien} updateBien={undefined} data={undefined}/> : null
+          <Annonce addBien={addBien} setAddBien={setAddBien} cUser={cUser} data={undefined}/> : null
         }
 
         {admin ?
