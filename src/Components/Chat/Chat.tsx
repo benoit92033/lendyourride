@@ -9,9 +9,10 @@ import db from '../../firebase.js';
 
 interface Props {
   setChat: React.Dispatch<React.SetStateAction<boolean>>;
+  cUser: any;
 }
 
-export const Chat = ({ setChat }: Props) => {
+export const Chat = ({ setChat, cUser }: Props) => {
 
   const pusher = new Pusher({
     appId: "1180093",
@@ -52,8 +53,11 @@ export const Chat = ({ setChat }: Props) => {
     db.collection('messages').add({
       content: values.message,
       timestamp: Date.now(),
-      // sender: user.id
-      // receiver: user.id
+      sender: {
+        email: cUser.currentUser.private.email,
+        prenom: cUser.currentUser.public.prenom,
+      }
+      //receiver: user.id
     }).then(()=> {
       fetchData();
     });
@@ -75,7 +79,7 @@ export const Chat = ({ setChat }: Props) => {
         <div style={{display: 'block'}}>
         {messages.map(message => {
             return (
-                <p style={{margin: '10px', padding: '3px 10px 3px 10px', backgroundColor: 'lightgray', borderRadius: '5px', width: 'fit-content' }}>{message.doc.content}</p>
+                <p style={{margin: '10px', padding: '3px 10px 3px 10px', backgroundColor: 'lightgray', borderRadius: '5px', width: 'fit-content' }}>{message.doc.sender.prenom + ' : ' + message.doc.content}</p>
               );
           })}
         </div>

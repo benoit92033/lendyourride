@@ -1,17 +1,16 @@
 import { Button, Form, Input } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import db from '../../firebase.js';
-import { WechatOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { Annonce } from '../Annonce';
 import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import { Admin } from '../Admin';
 import { User } from '../User';
-import { render } from 'react-dom';
 import { AdminButton } from '../AdminButton';
 import { UserButtons } from '../UserButtons';
 import { MyMenu } from '../Menu';
+import { ChatButton } from '../ChatButton';
 
 interface Props {}
 
@@ -56,9 +55,18 @@ export const Page = () => {
 
   const renderAdminButton = () => {
     if (cUser.currentUser != null && cUser.currentUser?.private.email != false && cUser.currentUser?.admin) {
-        return <AdminButton setAdmin={setAdmin}/>
+      return <AdminButton setAdmin={setAdmin}/>
     }
   }
+
+  const renderChatButton = () => {
+    if (cUser.currentUser != null && cUser.currentUser?.private.email != false) {
+      return <ChatButton setChat={setChat} />
+    }
+  }
+    
+
+
 
   return (
     <>
@@ -104,11 +112,9 @@ export const Page = () => {
           <User myAccount={myAccount} setMyAccount={setMyAccount} cUser={cUser}/> : null
         }
 
-        <Button type="primary" onClick={() => setChat(true)} className="buttonChat" >
-          <WechatOutlined style={{fontSize: '40px'}}/>
-        </Button>
+        {renderChatButton()}
         {chat ?
-          <Chat setChat={setChat}/> : null
+          <Chat setChat={setChat} cUser={cUser}/> : null
         }
       </Content>
     </>
