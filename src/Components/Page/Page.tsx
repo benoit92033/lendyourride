@@ -1,13 +1,13 @@
 import { Button, Form, Input } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
+
 import { WechatOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { AjoutAnnonce } from '../AjoutAnnonce';
+import { Annonce } from '../Annonce';
 import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import { Admin } from '../Admin';
 import { User } from '../User';
-import { Footer } from '../Footer';
 
 interface Props {
   displayedData: Array<any>;
@@ -29,7 +29,7 @@ export const Page = ({displayedData} : Props) => {
 
   return (
     <>
-      <Content style={{paddingTop: '110px', marginLeft: '5%', marginRight: '5%'}}>
+      <Content style={{paddingTop: '110px', marginLeft: '5%', marginRight: '5%', paddingBottom: '110px'}}>
         <div style={{display: 'flex'}}>
           <div onClick={() => setAddBien(true)} className="btn-addBien" style={{marginRight: '15px'}}>
             Mettre mon véhicule en location
@@ -69,7 +69,7 @@ export const Page = ({displayedData} : Props) => {
         }
 
         {addBien ?
-          <AjoutAnnonce addBien={addBien} setAddBien={setAddBien}/> : null
+          <Annonce addBien={addBien} setAddBien={setAddBien} updateBien={undefined} data={undefined}/> : null
         }
 
         {admin ?
@@ -87,8 +87,6 @@ export const Page = ({displayedData} : Props) => {
           <Chat setChat={setChat}/> : null
         }
       </Content>
-      <Footer />
-
     </>
   );
 };

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MyMenu } from './Components/Menu';
 import { Page } from './Components/Page';
 import { Legal } from './Components/Legal'
-
+import { Footer } from './Components/Footer';
 import { BrowserRouter, Route } from 'react-router-dom';
 import UserProvider from "./Providers/UserProvider";
 import { OmitProps } from 'antd/lib/transfer/ListBody';
@@ -34,6 +34,7 @@ function App() {
       <div>
         <MyMenu setDiplayedData={setDiplayedData} data={displayedData}/>;
         <Page displayedData={displayedData}/>;
+        <Footer />
       </div>
     )
   }
