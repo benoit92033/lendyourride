@@ -28,6 +28,8 @@ export const User = ({ user, setUser }: Props) => {
         <h2>Mes informations</h2>
 
         <h2>Mes biens</h2>
+
+        <h2>Mes réservations</h2>
       </Modal>
     </>
   );
