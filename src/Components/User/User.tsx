@@ -6,11 +6,12 @@ import { Bien } from '../Bien';
 import { Annonce } from '../Annonce';
 
 interface Props {
-    user : boolean;
-    setUser: React.Dispatch<React.SetStateAction<boolean>>;
+  myAccount : boolean;
+  setMyAccount: React.Dispatch<React.SetStateAction<boolean>>;
+  cUser: any;
 }
 
-export const User = ({ user, setUser }: Props) => {
+export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
 
   const [bien, setBien] = useState<any[]>([]);
   const [visible, setVisible] = useState(false);
@@ -18,17 +19,20 @@ export const User = ({ user, setUser }: Props) => {
   const [editBien, setEditBien] = useState(false);
 
   const fetchData = async () => {
-    const snapshot = await db.collection('products')
-      //.where('user', '==', user.id)
-      .get();
-    let arr: Array<any>;
-    arr = [];
-    snapshot.forEach((doc) => {
-      let bien = doc.data()
-      bien.bienId = doc.id
-      arr.push({doc: bien})
-    });
-    setBien(arr);
+    if (cUser != false) {
+      const snapshot = await db.collection('products')
+        .where('user', '==', cUser.currentUser.private.email)
+        .get();
+      let arr: Array<any>;
+      arr = [];
+      snapshot.forEach((doc) => {
+        let bien = doc.data()
+        bien.bienId = doc.id
+        arr.push({doc: bien})
+      });
+      setBien(arr);
+    }
+    
   };
 
   useEffect(() => {
@@ -47,15 +51,24 @@ export const User = ({ user, setUser }: Props) => {
       <Modal 
         title='Mon Compte'
         centered
-        visible={user}
+        visible={myAccount}
         width={2000}
-        onCancel={() => setUser(false)}
+        onCancel={() => setMyAccount(false)}
         footer={[
-          <Button key="back" onClick={() => setUser(false)}>
+          <Button key="back" onClick={() => setMyAccount(false)}>
             Quitter
           </Button>,
         ]}>
         <h2>Mes informations</h2>
+        <div style={{display: 'flex', marginBottom: '20px'}}>
+          <img style={{marginRight: '10px'}} src={cUser.currentUser.public.photo} alt="" />
+          <div>
+            <p>Email : {cUser.currentUser.private.email}</p>
+            <p>Téléphone : {cUser.currentUser.private.telephone}</p>
+            <p>Prénom : {cUser.currentUser.public.prenom}</p>
+          </div>
+        </div>
+
         <h2>Mes biens</h2>
         <Col style={{display: 'inline-block'}}>
           {bien.length != 0 ?

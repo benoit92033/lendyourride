@@ -6,16 +6,17 @@ import './menu.style.css';
 import logo from '../Images/logo.png';
 import { auth, signInWithGoogle } from '../../firebase';
 import MenuItem from 'antd/lib/menu/MenuItem';
-
-
+import db from '../../firebase.js';
 
 const { Search } = Input;
 interface Props {
   data: Array<any>;
   setDiplayedData: any;
+  setUser: any;
+  cUser: any;
 }
 
-export const MyMenu = ({setDiplayedData, data} : Props) => {
+export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
 
   const recherche = (value: string) => {
     let menuBien: Array<any>;
@@ -29,11 +30,30 @@ export const MyMenu = ({setDiplayedData, data} : Props) => {
     setDiplayedData(menuBien);
   }
 
-  const [state, setState] = useState<any>({currentUser: null});
-
   useEffect(() => {
     auth.onAuthStateChanged(user => {
-      setState({ currentUser: user });
+      if (user != undefined) {
+        db.collection('users').where('private.email', '==', user?.email).get().then(snapshot => {
+          if (!snapshot.empty) {
+            const user = snapshot.docs[0];
+            const data = user.data();
+            setUser({ currentUser: data });
+          } else {
+            let formattedUser = {
+              admin: false,
+              public: {
+                prenom: user?.displayName,
+                photo: user?.photoURL,
+              },
+              private: {
+                email: user?.email,
+                telephone: user?.phoneNumber,
+              }
+            }
+            setUser({ currentUser: formattedUser });
+          }
+        });
+      }
     });
   }, []);
 
@@ -62,11 +82,11 @@ export const MyMenu = ({setDiplayedData, data} : Props) => {
           <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 500 }} />
         </div>
         <div style={{ display: 'flex', minWidth: '500px', color: 'white' }}>
-          {state.currentUser ? (
+          {cUser.currentUser ? (
             <div style={{ display: 'inline'}}>
-                <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} src={(state.currentUser.photoURL)} />
-                <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>{state.currentUser.displayName}</p>
-                <Button type="primary" onClick={() => auth.signOut()}>
+                <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} src={(cUser.currentUser.public.photo)} />
+                <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>{cUser.currentUser.public.prenom}</p>
+                <Button type="primary" onClick={() => {auth.signOut(); setUser({ currentUser: null });}}>
                   Déconnexion
                 </Button>
             </div>

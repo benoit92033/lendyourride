@@ -1,6 +1,6 @@
 import { Button, Form, Input } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
-
+import db from '../../firebase.js';
 import { WechatOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { Annonce } from '../Annonce';
@@ -8,17 +8,19 @@ import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import { Admin } from '../Admin';
 import { User } from '../User';
+import { render } from 'react-dom';
+import { AdminButton } from '../AdminButton';
+import { UserButtons } from '../UserButtons';
+import { MyMenu } from '../Menu';
 
-interface Props {
-  displayedData: Array<any>;
-}
+interface Props {}
 
-export const Page = ({displayedData} : Props) => {
+export const Page = () => {
   const [visible, setVisible] = useState(false);
   const [addBien, setAddBien] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [chat, setChat] = useState(false);
-  const [user, setUser] = useState(false);
+  const [myAccount, setMyAccount] = useState(false);
 
   const [clickedIndex, setClickedIndex] = useState(1);
 
@@ -26,23 +28,45 @@ export const Page = ({displayedData} : Props) => {
     setClickedIndex(index);
     setVisible(true);
   }
+  
+  const [displayedData, setDiplayedData] = useState<any[]>([]);
+  const [cUser, setUser] = useState<any>({currentUser: null});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const snapshot = await db.collection('products').get();
+      let arr: Array<any>;
+      arr = [];
+      snapshot.forEach((doc) => {
+        let product = doc.data()
+        product.productId = doc.id
+        arr.push({doc: product})
+      });
+      setDiplayedData(arr);
+    };
+ 
+    fetchData();
+  }, []);
+
+  const renderUserButtons = () => {
+    console.log(cUser);
+    if (cUser.currentUser != null && cUser.currentUser?.private.email != false) {
+      return <UserButtons setMyAccount={setMyAccount} setAddBien={setAddBien}/>
+    }
+  }
+
+  const renderAdminButton = () => {
+    if (cUser.currentUser != null && cUser.currentUser?.private.email != false && cUser.currentUser?.admin) {
+        return <AdminButton setAdmin={setAdmin}/>
+    }
+  }
 
   return (
     <>
-      <Content style={{paddingTop: '110px', marginLeft: '5%', marginRight: '5%', paddingBottom: '110px'}}>
-        <div style={{display: 'flex'}}>
-          <div onClick={() => setAddBien(true)} className="btn-addBien" style={{marginRight: '15px'}}>
-            Mettre mon véhicule en location
-          </div>
-          <div onClick={() => setUser(true)} className="btn-addBien">
-            Mon compte
-          </div>
-        </div>
-        
-
-        <div onClick={() => setAdmin(true)} className="btn-admin">
-          Admin
-        </div>
+      <MyMenu setDiplayedData={setDiplayedData} data={displayedData} setUser={setUser} cUser={cUser} />
+      <Content style={{paddingTop: '130px', marginLeft: '5%', marginRight: '5%', paddingBottom: '110px'}}>
+        {renderUserButtons()}
+        {renderAdminButton()}
 
         {displayedData.length > 0 ? displayedData.map((row, index) => {
           if(row != null){
@@ -76,8 +100,8 @@ export const Page = ({displayedData} : Props) => {
           <Admin admin={admin} setAdmin={setAdmin}/> : null
         }
 
-        {user ?
-          <User user={user} setUser={setUser}/> : null
+        {myAccount ?
+          <User myAccount={myAccount} setMyAccount={setMyAccount} cUser={cUser}/> : null
         }
 
         <Button type="primary" onClick={() => setChat(true)} className="buttonChat" >

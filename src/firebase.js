@@ -20,18 +20,38 @@ const config = {
 // // Initialize Firebase
 const firebase_data = app.initializeApp(config);
 
+
+const storage = app.storage()
+const db = app.firestore();
+
 export const auth = app.auth();
 const googleProvider = new app.auth.GoogleAuthProvider()
 export const signInWithGoogle = () => {
   auth.signInWithPopup(googleProvider).then((res) => {
     console.log(res.user)
+    let user = res.user;
+    if (user != undefined) {
+      db.collection('users').where('private.email', '==', user?.email).get().then(snapshot => {
+        console.log(snapshot);
+        if (snapshot.empty) {
+          db.collection('users').add({
+            admin: false,
+            public: {
+              prenom: user?.displayName,
+              photo: user?.photoURL,
+            },
+            private: {
+              email: user?.email,
+              telephone: user?.phoneNumber,
+            }
+          })
+        }
+      });
+    }
   }).catch((error) => {
     console.log(error.message)
   })
 }
-
-const storage = app.storage()
-const db = app.firestore();
 
 export {
   storage, db as default

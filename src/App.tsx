@@ -11,29 +11,10 @@ import { OmitProps } from 'antd/lib/transfer/ListBody';
 import db from './firebase.js';
 
 function App() { 
-  const [displayedData, setDiplayedData] = useState<any[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const snapshot = await db.collection('products').get();
-      let arr: Array<any>;
-      arr = [];
-      snapshot.forEach((doc) => {
-        let product = doc.data()
-        product.productId = doc.id
-        arr.push({doc: product})
-      });
-      setDiplayedData(arr);
-    };
- 
-    fetchData();
-  }, []);
-
   const pageComponent = () =>{
     return (
       <div>
-        <MyMenu setDiplayedData={setDiplayedData} data={displayedData}/>;
-        <Page displayedData={displayedData}/>;
+        <Page />;
         <Footer />
       </div>
     )
