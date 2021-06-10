@@ -1,9 +1,9 @@
-import { Button, Modal, Row, Form, Input, InputNumber, Col, DatePicker, Space } from 'antd';
+import { Button, Modal, Row, Form, Input, InputNumber, Col, Alert, DatePicker, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import db from '../../firebase.js';
 
 interface Props {
-  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: number | undefined};
+  data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: number | undefined, User: string | undefined};
   visible : boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   cUser: any;
@@ -17,7 +17,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
 
   const fetchData = async () => {
     const snapshot = await db.collection('reviews')
-      .where('product', '==', data.ProductId)
+      .where('product.id', '==', data.ProductId)
       .get();
     let arr: Array<any>;
     arr = [];
@@ -38,6 +38,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
 
   const [showFormAvis, setFormAvis] = useState(false);
   const [showFormReservation, setFormReservation] = useState(false);
+  const [showReservationDone, setReservationDone] = useState(false);
 
   const addAvis = (values: any) => {
     db.collection('reviews').add({
@@ -47,7 +48,14 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
         seconds: Date.now() / 1000 | 0,
       },
       note: values.note,
-      product: data.ProductId,
+      product: {
+        description: data.Description,
+        location: data.Location,
+        tarif: data.Tarif,
+        titre: data.Title,
+        type: data.Type,
+        id: data.ProductId,
+      },
       status: "pending",
       titre: values.title,
       user: cUser.currentUser.private.email,
@@ -57,12 +65,37 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
     setFormAvis(false);
   };
 
-  const setReservation = (values: any) => {
-    console.log("Success:", values);
+  const [dateDebut, setDateDebut] = useState<any[]>([]);
+  const [dateFin, setDateFin] = useState<any[]>([]);
+
+  const setReservation = () => {
+    db.collection('sales').add({
+      buyer: cUser.currentUser.private.email,
+      seller: data.User,
+      date: {
+        nanoseconds: 0,
+        seconds: Date.now() / 1000 | 0,
+      },
+      startDate: dateDebut,
+      endDate: dateFin,
+      product: {
+        description: data.Description,
+        location: data.Location,
+        tarif: data.Tarif,
+        titre: data.Title,
+        type: data.Type,
+      }
+    }).then(()=> {
+      setFormReservation(false);
+      setReservationDone(true);
+    });
   };
 
   const dateChange = (date: any) => {
-    
+    if (date[0] != undefined && date[1] != undefined) {
+      setDateDebut(date[0].format('X'))
+      setDateFin(date[1].format('X'))
+    }
   };
 
   return (
@@ -94,6 +127,12 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
           <img className="imgBien" src={data.Photo} alt="" />
         </div>
 
+        {showReservationDone ?
+          <div>
+            <Alert style={{marginBottom: '20px'}} message="Réservation validée" type="success" />
+          </div> : null
+        }
+
         {showFormReservation ?  
           <div>
             <h2>Réservation</h2>
@@ -103,7 +142,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                   <RangePicker name="date" onChange={(date) => dateChange(date)}/>
                 </Space>
               </Form.Item>
-              <p>Tarif total : </p>
+              {/*<p>Tarif total : </p>*/}
               <Button type="primary" htmlType="submit">
                 Valider
               </Button>

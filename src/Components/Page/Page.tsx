@@ -87,6 +87,7 @@ export const Page = () => {
             Photo: displayedData[clickedIndex]?.doc.photo,
             Description: displayedData[clickedIndex]?.doc.description,
             ProductId: displayedData[clickedIndex]?.doc.productId,
+            User: displayedData[clickedIndex]?.doc.user,
           }} visible={visible} setVisible={setVisible} cUser={cUser}/> :
           null
         }

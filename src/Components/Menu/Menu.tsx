@@ -59,12 +59,6 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
 
   return (
     <>
-      {/*<Header className='headerMenu'>
-        <div className='logo'>
-          <img src={logo}/>
-        </div>
-        <div className='searchBar'>
-  <Search className='searchBar2' placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} />*/}
       <Header 
         style={{
           position: 'fixed',
