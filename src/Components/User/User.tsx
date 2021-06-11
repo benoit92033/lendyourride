@@ -126,7 +126,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                       <span onClick={() => {setVisible(true); setDetailBien(bien.doc.bienId) }} style={{color: '#DB33FF'}}><EyeOutlined/></span>
                       <span onClick={() => {setEditBien(true); setDetailBien(bien.doc.bienId) }} style={{color: '#007bff'}}><EditOutlined/></span>
                       <span onClick={() => delBien(bien.doc.bienId)} style={{color: 'red'}}><DeleteOutlined/></span>
-                      {seeBien && bien.doc.bienId === seeBien ?
+                      {visible && bien.doc.bienId === detailBien ?
                         <Bien cUser={cUser} data={{
                           Location: bien.doc.localisation.ville, 
                           Title: bien.doc.titre,
@@ -143,7 +143,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                         null
                       }
 
-                      {editBien && bien.doc.bienId === seeBien ? 
+                      {editBien && bien.doc.bienId === detailBien ? 
                         <Annonce addBien={editBien} setAddBien={setEditBien} cUser={cUser}
                           data={{
                             Location: bien.doc.localisation.ville, 
