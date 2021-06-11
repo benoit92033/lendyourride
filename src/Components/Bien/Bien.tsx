@@ -177,7 +177,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
                       </Col>);
-                  } else if (avi.doc.status == "pending" && userLoged && cUser.currentUser.private.email == avi.doc.user) {
+                  } else if (avi.doc.status == "pending" && userLoged && cUser.currentUser.private.email == avi.doc.user.email) {
                     return (
                       <Col className="avis avisPending">
                           <p style={{fontWeight: 'bold'}}>Votre avis est en attente d'approbation</p>
@@ -186,7 +186,7 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
                           <p>Contenu: {avi.doc.contenu}</p>
                           <p>Note: {avi.doc.note}</p>
                       </Col>);
-                  } else if (avi.doc.status == "refused" && userLoged && cUser.currentUser.private.email == avi.doc.user) {
+                  } else if (avi.doc.status == "refused" && userLoged && cUser.currentUser.private.email == avi.doc.user.email) {
                     return (
                       <Col className="avis avisRefused">
                           <p style={{fontWeight: 'bold'}}>Votre avis a été refusé</p>
