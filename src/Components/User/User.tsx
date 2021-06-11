@@ -29,7 +29,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
   const [seeAvis, setSeeAvis] = useState(false);
 
   const fetchData = async () => {
-    if (cUser != false) {
+    if (cUser !== false) {
       const productsSnapshot = await db.collection('products').where('user.email', '==', cUser.currentUser.private.email).get();
       let arr: Array<any>;
       arr = [];
@@ -118,7 +118,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
           <div>
             <h2 onClick={() => setSeeBien(false)} style={{marginTop: '25px'}}>Mes biens &nbsp;&nbsp;<UpOutlined/></h2>
             <Col style={{display: 'inline-block'}}>
-              {bien.length != 0 ?
+              {bien.length !== 0 ?
                 bien.map(bien => {
                   return (
                     <Row className="tablebien">
@@ -126,7 +126,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                       <span onClick={() => {setVisible(true); setDetailBien(bien.doc.bienId) }} style={{color: '#DB33FF'}}><EyeOutlined/></span>
                       <span onClick={() => {setEditBien(true); setDetailBien(bien.doc.bienId) }} style={{color: '#007bff'}}><EditOutlined/></span>
                       <span onClick={() => delBien(bien.doc.bienId)} style={{color: 'red'}}><DeleteOutlined/></span>
-                      {seeBien && bien.doc.bienId == seeBien ?
+                      {seeBien && bien.doc.bienId === seeBien ?
                         <Bien cUser={cUser} data={{
                           Location: bien.doc.localisation.ville, 
                           Title: bien.doc.titre,
@@ -143,7 +143,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                         null
                       }
 
-                      {editBien && bien.doc.bienId == seeBien ? 
+                      {editBien && bien.doc.bienId === seeBien ? 
                         <Annonce addBien={editBien} setAddBien={setEditBien} cUser={cUser}
                           data={{
                             Location: bien.doc.localisation.ville, 
@@ -166,12 +166,12 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
           <div>
             <h2 onClick={() => setSeeMyRent(false)} style={{marginTop: '50px'}}>Mes réservations &nbsp;&nbsp;<UpOutlined/></h2>
             <Col style={{display: 'inline-block'}}>
-              {myRent.length != 0 ?
+              {myRent.length !== 0 ?
                 myRent.map(rent => {
                   var date = new Date(rent.doc.startDate * 1000);
                   var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
                   var startDate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
-                  var date = new Date(rent.doc.endDate * 1000);
+                  date = new Date(rent.doc.endDate * 1000);
                   var endDate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
                   return (
                     <Row className="tablebien">
@@ -188,12 +188,12 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
           <div>
             <h2 onClick={() => setSeeRent(false)} style={{marginTop: '50px'}}>Réservations de mes véhicules &nbsp;&nbsp;<UpOutlined/></h2>
             <Col style={{display: 'inline-block'}}>
-              {bienRent.length != 0 ?
+              {bienRent.length !== 0 ?
                 bienRent.map(rent => {
                   var date = new Date(rent.doc.startDate * 1000);
                   var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
                   var startDate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
-                  var date = new Date(rent.doc.endDate * 1000);
+                  date = new Date(rent.doc.endDate * 1000);
                   var endDate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
                   return (
                     <Row className="tablebien">
@@ -210,12 +210,12 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
           <div>
             <h2 onClick={() => setSeeAvis(false)} style={{marginTop: '50px'}}>Mes avis &nbsp;&nbsp;<UpOutlined/></h2>
             <Row style={{display: 'flex'}}>
-              {avis.length != 0 ?
+              {avis.length !== 0 ?
                 avis.map(avis => {
                   var date = new Date(avis.doc.date.seconds * 1000);
                   var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
                   let avisdate = date.getDate() + ' ' +  months[date.getMonth()] + ' ' + date.getFullYear();
-                  if (avis.doc.status == "approved") {
+                  if (avis.doc.status === "approved") {
                     return (
                       <Col className="avis">
                           <p style={{fontWeight: 'bold', fontSize: '18px'}}>Véhicule: {avis.doc.product.titre}</p>
@@ -225,7 +225,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                           <p>Note: {avis.doc.note}</p>
                           <p onClick={() => delAvis(avis.doc.avisId)}></p>
                       </Col>);
-                  } else if (avis.doc.status == "pending") {
+                  } else if (avis.doc.status === "pending") {
                     return (
                       <Col className="avis avisPending">
                           <p style={{fontWeight: 'bold', fontSize: '18px'}}>Véhicule: {avis.doc.product.titre}</p>
@@ -236,7 +236,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
                           <p>Note: {avis.doc.note}</p>
                           <p onClick={() => delAvis(avis.doc.avisId)}></p>
                       </Col>);
-                  } else if (avis.doc.status == "refused") {
+                  } else if (avis.doc.status === "refused") {
                     return (
                       <Col className="avis avisRefused">
                           <p style={{fontWeight: 'bold', fontSize: '18px'}}>Véhicule: {avis.doc.product.titre}</p>
