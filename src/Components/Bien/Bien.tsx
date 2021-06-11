@@ -33,6 +33,9 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
     fetchData();
     if (cUser.currentUser != null) {
       setUserLoged(true);
+      if (cUser.currentUser.private.email === data.User.email) {
+        setUserLoged(false);
+      }
     }
   }, []);
 
