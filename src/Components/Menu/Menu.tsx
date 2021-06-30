@@ -1,4 +1,4 @@
-import { Input, Menu, Button } from 'antd';
+import { Input, Menu, Button, Form } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,12 +22,29 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
     let menuBien: Array<any>;
     menuBien = [];
     data.map(function(row) {
-      if(value == null || row.doc.titre.toUpperCase().includes(value.toUpperCase())){
+      if (value == null || row.doc.titre.toUpperCase().includes(value.toUpperCase())){
         menuBien.push(row)
       }
       return null;
     })
     setDiplayedData(menuBien);
+  }
+
+  const fetchData = async () => {
+    const snapshot = await db.collection('products').get();
+    let arr: Array<any>;
+    arr = [];
+    snapshot.forEach((doc) => {
+      let product = doc.data()
+      product.productId = doc.id
+      arr.push({doc: product})
+    });
+    setDiplayedData(arr);
+  };
+
+  const cleanSearch = () => {
+    form.resetFields();
+    fetchData();
   }
 
   useEffect(() => {
@@ -57,6 +74,8 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
     });
   }, []);
 
+  const [form] = Form.useForm();
+
   return (
     <>
       <Header 
@@ -68,12 +87,15 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
           padding: 0,
           display: 'flex',
           justifyContent: 'space-between'}}>
-            
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }}>
+        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }} onClick={() => cleanSearch()}>
           <img src="logoLYR.jpg" alt=""/>
         </div>
         <div style={{ display: 'flex', minWidth: '200px', color: 'white', marginRight: '200px', marginTop: '30px' }}>
-          <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 500 }} />
+          <Form form={form}>
+            <Form.Item name="search">
+              <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 500 }} />
+            </Form.Item>
+          </Form>
         </div>
         <div style={{ display: 'flex', minWidth: '500px', color: 'white' }}>
           {cUser.currentUser ? (
