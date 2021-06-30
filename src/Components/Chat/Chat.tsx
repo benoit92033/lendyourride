@@ -14,38 +14,16 @@ interface Props {
 
 export const Chat = ({ setChat, cUser }: Props) => {
 
-  const pusher = new Pusher({
-    appId: "1180093",
-    key: "0eb480c8f3021ab3a60e",
-    secret: "e87198ffab263ab6ac89",
-    cluster: "eu",
-    useTLS: true
-  });
-
   const [messages, setMessages] = useState<any[]>([]);
 
-  const fetchData = async () => {
-    const snapshot = await db.collection('messages').orderBy("timestamp").get();
-    let arr: Array<any>;
-    arr = [];
-    snapshot.forEach((doc) => {
-      arr.push({doc: doc.data()})
-    });
-    setMessages(arr);
-  };
-
   useEffect(() => {
-    //Pusher_JS.logToConsole = true;
-
-    fetchData();
-
-    var pusher_JS = new Pusher_JS('0eb480c8f3021ab3a60e', {
-      cluster: 'eu'
-    });
-  
-    var channel = pusher_JS.subscribe('channel-test');
-    channel.bind('message', () => {
-      fetchData();
+    db.collection("messages").orderBy("timestamp").onSnapshot((querySnapshot) => {
+      let arr: Array<any>;
+      arr = [];
+      querySnapshot.forEach((doc) => {
+        arr.push({doc: doc.data()})
+      });
+      setMessages(arr);
     });
   }, []);
   
@@ -59,10 +37,7 @@ export const Chat = ({ setChat, cUser }: Props) => {
       }
       //receiver: user.id
     }).then(()=> {
-      fetchData();
     });
-
-    pusher.trigger("channel-test", "message", {});
 
     form.resetFields();
   }
@@ -78,9 +53,23 @@ export const Chat = ({ setChat, cUser }: Props) => {
         </div>
         <div style={{display: 'block'}}>
         {messages.map(message => {
-            return (
-                <p style={{margin: '10px', padding: '3px 10px 3px 10px', backgroundColor: 'lightgray', borderRadius: '5px', width: 'fit-content' }}>{message.doc.sender.prenom + ' : ' + message.doc.content}</p>
+            console.log(message);
+            console.log(cUser);
+            if (message.doc.sender.email == cUser.currentUser.private.email) {
+              return (
+                <div>
+                  <p className="chatMessage" style={{backgroundColor: 'rgba(0, 123, 255, 0.3)'}}>{message.doc.content}</p>
+                  <p className="chatUser">{message.doc.sender.prenom}</p>
+                </div>
               );
+            } else {
+              return (
+                <div>
+                  <p className="chatMessage">{message.doc.content}</p>
+                  <p className="chatUser">{message.doc.sender.prenom}</p>
+                </div>
+              );
+            }
           })}
         </div>
         <Form onFinish={sendMessage} form={form} className="chatForm" style={{display: 'flex'}}>
