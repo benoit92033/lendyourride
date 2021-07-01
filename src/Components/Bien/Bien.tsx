@@ -48,28 +48,28 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
   const [showReservationDone, setReservationDone] = useState(false);
 
   const addAvis = (values: any) => {
-    // db.collection('reviews').add({
-    //   contenu: values.content,
-    //   date: {
-    //     nanoseconds: 0,
-    //     seconds: Date.now() / 1000 | 0,
-    //   },
-    //   note: values.note,
-    //   product: {
-    //     description: data.Description,
-    //     location: data.Location,
-    //     tarif: data.Tarif,
-    //     titre: data.Title,
-    //     type: data.Type,
-    //     id: data.ProductId,
-    //   },
-    //   status: "pending",
-    //   titre: values.title,
-    //   user: {
-    //     email: cUser.currentUser.private.email,
-    //     prenom: cUser.currentUser.public.prenom,
-    //   }
-    // });
+    db.collection('reviews').add({
+      contenu: values.content,
+      date: {
+        nanoseconds: 0,
+        seconds: Date.now() / 1000 | 0,
+      },
+      note: values.note,
+      product: {
+        description: data.Description,
+        location: data.Location,
+        tarif: data.Tarif,
+        titre: data.Title,
+        type: data.Type,
+        id: data.ProductId,
+      },
+      status: "pending",
+      titre: values.title,
+      user: {
+        email: cUser.currentUser.private.email,
+        prenom: cUser.currentUser.public.prenom,
+      }
+    });
     setFormAvis(false);
   };
 
@@ -77,32 +77,32 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
   const [dateFin, setDateFin] = useState<any[]>([]);
 
   const setReservation = () => {
-    // db.collection('sales').add({
-    //   buyer: {
-    //     email: cUser.currentUser.private.email,
-    //     prenom: cUser.currentUser.public.prenom,
-    //   },
-    //   seller: {
-    //     email: data.User.email,
-    //     prenom: data.User.prenom,
-    //   },
-    //   date: {
-    //     nanoseconds: 0,
-    //     seconds: Date.now() / 1000 | 0,
-    //   },
-    //   startDate: dateDebut,
-    //   endDate: dateFin,
-    //   product: {
-    //     description: data.Description,
-    //     location: data.Location,
-    //     tarif: data.Tarif,
-    //     titre: data.Title,
-    //     type: data.Type,
-    //   }
-    // }).then(()=> {
-    //   setFormReservation(false);
-    //   setReservationDone(true);
-    // });
+    db.collection('sales').add({
+      buyer: {
+        email: cUser.currentUser.private.email,
+        prenom: cUser.currentUser.public.prenom,
+      },
+      seller: {
+        email: data.User.email,
+        prenom: data.User.prenom,
+      },
+      date: {
+        nanoseconds: 0,
+        seconds: Date.now() / 1000 | 0,
+      },
+      startDate: dateDebut,
+      endDate: dateFin,
+      product: {
+        description: data.Description,
+        location: data.Location,
+        tarif: data.Tarif,
+        titre: data.Title,
+        type: data.Type,
+      }
+    }).then(()=> {
+      setFormReservation(false);
+      setReservationDone(true);
+    });
   };
 
   const dateChange = (date: any) => {
