@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Form, Input, Modal, Row, Col } from "antd";
+import { Button, Modal, Row, Col } from "antd";
 import db from '../../firebase.js';
+import './Admin.style.css';
 
 interface Props {
     admin : boolean;
-    setAdmin: React.Dispatch<React.SetStateAction<boolean>>;
+    setAdmin: (value: boolean) => void;
 }
 
 export const Admin = ({ admin, setAdmin }: Props) => {
@@ -12,21 +13,18 @@ export const Admin = ({ admin, setAdmin }: Props) => {
   const [avis, setData] = useState<any[]>([]);
 
   const fetchData = async () => {
-    const snapshot = await db.collection('reviews')
-      .where('status', '==', 'pending').get();
-    let arr: Array<any>;
-    arr = [];
-    snapshot.forEach((doc) => {
-      let avis = doc.data()
-      avis.avisId = doc.id
-      arr.push({doc: avis})
-    });
-    setData(arr);
+    // Promise.resolve(db.collection('reviews')
+    //   .where('status', '==', 'pending').get()).then((snapshot)=>{
+    //     let arr: Array<any>;
+    //     arr = [];
+    //     snapshot.forEach((doc) => {
+    //       let aviss = doc.data()
+    //       aviss.avisId = doc.id
+    //       arr.push({doc: aviss})
+    //     });
+    //     setData(arr);
+    //   });
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const approveAvis = (avisId: any, approve: boolean) => {
     let doc = db.collection('reviews').doc(avisId);
@@ -38,10 +36,13 @@ export const Admin = ({ admin, setAdmin }: Props) => {
     }
     doc.update({
       status: status
-    }).then(()=> {
-      fetchData();
     });
   };
+
+  useEffect(() => {
+    fetchData();
+  }, [admin, avis]);
+
 
   return (
     <>
@@ -59,7 +60,7 @@ export const Admin = ({ admin, setAdmin }: Props) => {
 
         <h2>Gestion des avis</h2>
         <Row>
-            {avis.length != 0 ?
+            {avis.length !== 0 ?
                 avis.map(avi => {
                     var date = new Date(avi.doc.date.seconds * 1000);
                     var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
@@ -68,7 +69,7 @@ export const Admin = ({ admin, setAdmin }: Props) => {
                     var day = date.getDate();
                     return(
                         <Col className="avis">
-                            <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
+                            <p>{avi.doc.user?.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
                             <p>Titre: {avi.doc.titre}</p>
                             <p>Contenu: {avi.doc.contenu}</p>
                             <p>Note: {avi.doc.note}</p>

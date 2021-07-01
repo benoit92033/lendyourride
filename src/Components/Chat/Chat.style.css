@@ -1,0 +1,17 @@
+
+.chat {
+    border-radius: 15px !important;
+    height: 500px !important;
+    max-height: 600px !important;
+    width: 400px !important;
+    max-width: 400px !important;
+    background-color: white !important;
+    position: fixed !important;
+    bottom: 30px !important; 
+    right: 30px !important;
+}
+
+.chatForm {
+    position: absolute !important;
+    bottom: 10px !important;
+}

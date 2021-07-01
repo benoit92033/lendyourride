@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import { Button, Row, Form, Input, InputNumber, Modal, Col } from "antd";
-import { EyeOutlined, EditOutlined, DeleteOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
+import React, {useState, useEffect, useCallback} from 'react';
+import { Button, Row, Modal, Col } from "antd";
+import { EyeOutlined, EditOutlined, DeleteOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
 import { Bien } from '../Bien';
 import { Annonce } from '../Annonce';
+import './User.style.css'
 
 interface Props {
-  myAccount : boolean;
-  setMyAccount: React.Dispatch<React.SetStateAction<boolean>>;
-  cUser: any;
+    myAccount : boolean;
+    setMyAccount: (value: boolean) => void;
+    cUser: any;
 }
 
 export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
@@ -28,8 +29,8 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
   const [seeRent, setSeeRent] = useState(false);
   const [seeAvis, setSeeAvis] = useState(false);
 
-  const fetchData = async () => {
-    if (cUser !== false) {
+  const fetchData = useCallback(async () => {
+    if (myAccount !== false) {
       const productsSnapshot = await db.collection('products').where('user.email', '==', cUser.currentUser.private.email).get();
       let arr: Array<any>;
       arr = [];
@@ -67,11 +68,11 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
       });
       setAvis(arr);
     }
-  };
+  }, [cUser.currentUser.private.email, myAccount]);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData, myAccount]);
 
   const delBien = (bienId: any) => {
     db.collection('products').doc(bienId).delete().then(()=> {
@@ -90,6 +91,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
       fetchData();
     });
   };
+
 
   return (
     <>
@@ -113,7 +115,7 @@ export const User = ({ myAccount, setMyAccount, cUser }: Props) => {
             <p>Prénom : {cUser.currentUser.public.prenom}</p>
           </div>
         </div>
-
+        
         {seeBien ?
           <div>
             <h2 onClick={() => setSeeBien(false)} style={{marginTop: '25px'}}>Mes biens &nbsp;&nbsp;<UpOutlined/></h2>

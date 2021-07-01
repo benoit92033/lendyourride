@@ -1,14 +1,13 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import Pusher from 'pusher';
 import Pusher_JS from 'pusher-js';
-import { Button, Checkbox, Form, Input, message, Modal } from 'antd';
-import { Content } from 'antd/lib/layout/layout';
-import axios from 'axios';
+import { Button, Form, Input } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
+import './Chat.style.css'
 
 interface Props {
-  setChat: React.Dispatch<React.SetStateAction<boolean>>;
+  setChat: (value:boolean) => void;
   cUser: any;
 }
 

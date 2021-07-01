@@ -1,23 +1,4 @@
-.header{
-    text-align: center;
-}
-.header p {
-    color: white;
-}
-a{
-    color: white;
-    text-decoration: none;
-    cursor : pointer;
-}
 .footer{
-    margin-top : 10rem;
-    padding: 1rem;
-    background-color: #001529;
-    position: fixed;
-    bottom: 0; 
-    left: 0; 
-    width: 100%;
-}
-Content #CGU{
-    text-align:justify;
+    text-align:center !important;
+    background-color: lightgray !important;
 }

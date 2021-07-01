@@ -1,13 +1,13 @@
-import { HashLink as Link } from "react-router-hash-link";
+import { Footer } from "antd/lib/layout/layout";
+import { Link } from "react-router-dom";
+import "./Footer.style.css"
 
-export const Footer = () => {
+export const MyFooter = () => {
   return (
     <>
-      <div className="footer">
-         <ul> Legal 
-            <li><Link to="/legal/CGU">CGU</Link></li>
-        </ul> 
-      </div>
+      <Footer className="footer">
+        <Link to="/legal/CGU">CGU</Link>
+      </Footer>
     </>
   );
 };

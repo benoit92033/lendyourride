@@ -1,0 +1,11 @@
+.tablebien {
+    border-radius: 10px !important;
+    padding: 10px !important;
+    margin: 3px !important;
+    background-color: lightgray !important;
+}
+
+.tablebien > span {
+    margin-right: 30px !important;
+    font-size: 20px !important;
+}

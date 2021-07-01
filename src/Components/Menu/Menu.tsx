@@ -1,22 +1,25 @@
-import { Input, Menu, Button, Form } from 'antd';
+import { Input, Button, Row, Col, Typography, Avatar, List, Form } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import './menu.style.css';
+import './Menu.style.css';
 import logo from '../Images/logo.png';
-import { auth, signInWithGoogle } from '../../firebase';
-import MenuItem from 'antd/lib/menu/MenuItem';
-import db from '../../firebase.js';
+import db, { auth, signInWithGoogle } from '../../firebase';
+
+const {Text} = Typography;
+
 
 const { Search } = Input;
 interface Props {
   data: Array<any>;
   setDiplayedData: any;
-  setUser: any;
+  setAdmin: (value: boolean) => void;
+  setAddBien: (value: boolean) => void;
+  setMyAccount: (user : boolean) => void;
+  setUser: (user : any) => void;
   cUser: any;
 }
 
-export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
+export const MyMenu = ({setDiplayedData, data, setAdmin, setAddBien, setMyAccount, setUser, cUser} : Props) => {
 
   const recherche = (value: string) => {
     let menuBien: Array<any>;
@@ -30,27 +33,10 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
     setDiplayedData(menuBien);
   }
 
-  const fetchData = async () => {
-    const snapshot = await db.collection('products').get();
-    let arr: Array<any>;
-    arr = [];
-    snapshot.forEach((doc) => {
-      let product = doc.data()
-      product.productId = doc.id
-      arr.push({doc: product})
-    });
-    setDiplayedData(arr);
-  };
-
-  const cleanSearch = () => {
-    form.resetFields();
-    fetchData();
-  }
-
   useEffect(() => {
     auth.onAuthStateChanged(user => {
-      if (user != undefined) {
-        db.collection('users').where('private.email', '==', user?.email).get().then(snapshot => {
+      if (user !== null) {
+        Promise.resolve(db.collection('users').where('private.email', '==', user?.email).get()).then(snapshot => {
           if (!snapshot.empty) {
             const user = snapshot.docs[0];
             const data = user.data();
@@ -72,37 +58,89 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
         });
       }
     });
-  }, []);
-
-  const [form] = Form.useForm();
+  }, [cUser]);
 
   return (
     <>
-      <Header 
-        style={{
-          position: 'fixed',
-          zIndex: 1,
-          width: '100vw',
-          height: '12vh',
-          padding: 0,
-          display: 'flex',
-          justifyContent: 'space-between'}}>
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white' }} onClick={() => cleanSearch()}>
-          <img src="logoLYR.jpg" alt=""/>
+      {/*<Header className='headerMenu'>
+        <div className='logo'>
+          <img src={logo}/>
         </div>
-        <div style={{ display: 'flex', minWidth: '200px', color: 'white', marginRight: '200px', marginTop: '30px' }}>
-          <Form form={form}>
-            <Form.Item name="search">
-              <Search placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} style={{ width: 500 }} />
-            </Form.Item>
-          </Form>
-        </div>
+        <div className='searchBar'>
+  <Search className='searchBar2' placeholder="Rechercher un bien" onSearch={(value: string) => recherche(value)} />*/}
+      <Header className="headerMenu">
+        <Row>
+          <Col flex={1}>
+            <Button className="buttonLogo" type="link" href="/">
+              <img
+                className="logo"
+                src={logo}
+                alt='logo'
+              />
+            </Button>
+            {cUser.currentUser !== null && cUser.currentUser?.private.email !== false && (
+                <>
+                  <Button onClick={() => setAddBien(true)}>
+                    Ajouter un bien
+                  </Button>
+                  <Button onClick={() => setMyAccount(true)}>
+                    Mon compte
+                  </Button>
+                </>
+              )
+            }
+          </Col>
+          <Col flex={1} className="search">
+            <Search className="searchBar" placeholder="Rechercher un bien" allowClear onSearch={(value: string) => recherche(value)} />
+          </Col>
+          <Col flex={1}>
+            {cUser.currentUser !== null && cUser.currentUser?.private.email !== false ? (
+              //Connecter
+              <>
+                <List
+                  itemLayout="vertical"
+                  className="avatarList"
+                >
+                  <List.Item className="avatarItem" extra={<Button type="primary" onClick={() => {auth.signOut(); setUser({ currentUser: null });}}>
+                        Déconnexion
+                      </Button>}>
+                      <List.Item.Meta className="avatarMeta"
+                        avatar={<Avatar src={cUser.currentUser.public.photo} />}
+                        title={<Text className="avatarNom">{cUser.currentUser.public.prenom}</Text>}
+                        description={cUser.currentUser !== null && cUser.currentUser?.private.email !== false && cUser.currentUser?.admin && (<Button type="link" onClick={() => setAdmin(true)}>Admin</Button>)}
+                      /> 
+                    </List.Item>
+                </List>
+                </>
+              ): 
+              //Deconnecter
+                <Button style={{marginTop: '30px'}} type="primary" onClick={signInWithGoogle}>
+                  Connexion avec Google
+                </Button>
+              /*<div className="" style={{ display: 'inline'}}>
+                  <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} 
+                  src={(state.currentUser.photoURL)} />
+                  <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>
+                  {state.currentUser.displayName}</p>
+                  
+                  <Button type="primary" onClick={() => auth.signOut()}>
+                    Déconnexion
+                  </Button>
+              </div>
+              ) 
+            */}
+          </Col>
+        </Row>
+        
+
+
+        {/*
         <div style={{ display: 'flex', minWidth: '500px', color: 'white' }}>
-          {cUser.currentUser ? (
+          {state.currentUser ? (
             <div style={{ display: 'inline'}}>
-                <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} src={(cUser.currentUser.public.photo)} />
-                <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>{cUser.currentUser.public.prenom}</p>
-                <Button type="primary" onClick={() => {auth.signOut(); setUser({ currentUser: null });}}>
+                <img className="ant-menu-item" style={{ borderRadius: '50%', width: '100px', display: 'inline'}} src={(state.currentUser.photoURL)} />
+                <p style={{ marginRight: '25px', fontSize: '20px', fontWeight: 'bold', display: 'inline'}}>{state.currentUser.displayName}</p>
+                <Button type="primary" onClick={() => auth.signOut()}>
                   Déconnexion
                 </Button>
             </div>
@@ -111,7 +149,7 @@ export const MyMenu = ({setDiplayedData, data, setUser, cUser} : Props) => {
                 Connexion avec Google
               </Button>
           }
-        </div>
+        </div>*/}
       </Header>
     </>
   );

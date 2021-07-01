@@ -1,0 +1,19 @@
+.imgBien {
+    width: 400px !important;
+}
+
+.bien{
+    display: flex !important;
+    margin-bottom: 50px !important;
+    justify-content: space-between !important;
+}
+
+.descBien {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.ant-ribbon-wrapper{
+    width: 100% !important;
+}

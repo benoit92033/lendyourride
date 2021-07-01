@@ -1,16 +1,16 @@
 #CGU {
-    padding-left: 15%;
-    padding-right: 15%;
-    margin-top:12vh;
-    text-align: justify
+    padding-left: 15% !important;
+    padding-right: 15% !important;
+    margin-top: 12vh !important;
+    text-align: justify !important;
 }
 
 .header {
-    text-align: center;
-    font-weight: bold;
-    position: fixed;
-    z-index: 1;
-    width: 100vw;
-    height: 12vh;
-    padding: 0;
+    text-align: center !important;
+    font-weight: bold !important;
+    position: fixed !important;
+    z-index: 1 !important;
+    width: 100vw !important;
+    height: 12vh !important;
+    padding: 0 !important;
 }

@@ -1,0 +1,24 @@
+.upload__image-wrapper {
+    margin: 10px !important;
+}
+.upload__image-wrapper > button {
+    width: 150px !important;
+    height: 150px !important;
+    background-color: lightgrey !important;
+    border: none !important;
+    border-radius: 15px !important;
+}
+
+.image-item > img {
+    width: 150px !important;
+    height: 150px !important;
+    border-radius: 15px !important;
+    object-fit: cover !important;
+}
+
+
+
+.image-btn-del {
+    margin: 10px !important;
+    height: 45px !important;
+}

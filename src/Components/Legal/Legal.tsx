@@ -1,8 +1,8 @@
 import { HashLink as Link } from "react-router-hash-link";
 import { Layout } from "antd";
-import "./legal.style.css"
+import "./Legal.style.css"
 export const Legal = () => {
-  const { Header, Footer, Content } = Layout;
+  const { Header, Content } = Layout;
   return (
     <>
       <Header className="header"><p>Condition générales d'utilisation</p></Header>

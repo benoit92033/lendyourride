@@ -3,11 +3,12 @@ import { DeleteOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
 import { useEffect, useState } from "react";
 import ImageUploading, { ImageListType } from "react-images-uploading";
+import './Annonce.style.css'
 
 interface Props {
   addBien : boolean;
   data: {Title: string | undefined, Location: string | undefined, Type: string | undefined, Tarif: number | undefined, Photo: string | undefined, Description: string | undefined, ProductId: string | undefined} | undefined;
-  setAddBien: React.Dispatch<React.SetStateAction<boolean>>;
+  setAddBien: (value :boolean) => void;
   cUser: any;
 }
 
@@ -16,7 +17,7 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
   const { Option } = Select;
 
   const onFinish = (values: any) => {
-    if (image != undefined) {
+    if (image !== undefined) {
       db.app.storage().ref('images/' + image.name).put(image).then(()=> {
         db.app.storage().ref('images').child(image.name).getDownloadURL()
         .then(fireBaseUrl => {
@@ -37,7 +38,7 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
         })
       })
       setAddBien(false);
-    } else if (data != undefined) {
+    } else if (data !== undefined) {
       db.collection('products').doc(data.ProductId).update({
         description: values.description,
         localisation: {
@@ -61,7 +62,7 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
   const maxNumber = 1;
 
   const onChange = (imageList: ImageListType) => {
-    if (imageList.length != 0) {
+    if (imageList.length !== 0) {
       setImage(imageList[0].file as File);
     } else {
       setImage(undefined);
@@ -70,9 +71,9 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
   };
 
   useEffect(() => {
-    if (data != undefined) {
+    if (data !== undefined) {
       setEdit(true)
-      if (data.Photo != undefined) {
+      if (data.Photo !== undefined) {
         let image = {
           dataURL: data.Photo
         }
@@ -133,7 +134,7 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
         <ImageUploading multiple value={images} onChange={onChange} maxNumber={maxNumber}>
           {({imageList, onImageUpload, onImageRemove, isDragging, dragProps}) => (
             <div className="upload__image-wrapper">
-              {imageList.length == 0 ?
+              {imageList.length === 0 ?
               <button style={isDragging ? { color: "red" } : undefined} onClick={onImageUpload} {...dragProps}>
                 Cliquez pour ajouter une image ou glisser une image ici
               </button> : null}

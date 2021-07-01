@@ -1,25 +1,23 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Card, Col, Row } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
-import db from '../../firebase.js';
-import React, { useEffect, useState } from 'react';
-import { Annonce } from '../Annonce';
+import { WechatOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
 import { Bien } from '../Bien';
 import { Chat } from '../Chat';
-import { Admin } from '../Admin';
-import { User } from '../User';
-import { AdminButton } from '../AdminButton';
-import { UserButtons } from '../UserButtons';
-import { MyMenu } from '../Menu';
-import { ChatButton } from '../ChatButton';
+import './Page.style.css'
+import db from '../../firebase';
 
-interface Props {}
+const { Meta } = Card;
 
-export const Page = () => {
+interface Props {
+  setDisplayedData : (data : any[]) => void;
+  displayedData : any[];
+  cUser: any;
+}
+
+export const Page = ({setDisplayedData, displayedData, cUser} : Props) => {
   const [visible, setVisible] = useState(false);
-  const [addBien, setAddBien] = useState(false);
-  const [admin, setAdmin] = useState(false);
   const [chat, setChat] = useState(false);
-  const [myAccount, setMyAccount] = useState(false);
 
   const [clickedIndex, setClickedIndex] = useState(1);
 
@@ -28,64 +26,35 @@ export const Page = () => {
     setVisible(true);
   }
   
-  const [displayedData, setDiplayedData] = useState<any[]>([]);
-  const [cUser, setUser] = useState<any>({currentUser: null});
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const snapshot = await db.collection('products').get();
-      let arr: Array<any>;
-      arr = [];
-      snapshot.forEach((doc) => {
-        let product = doc.data()
-        product.productId = doc.id
-        arr.push({doc: product})
-      });
-      setDiplayedData(arr);
-    };
- 
-    fetchData();
-  }, []);
-
-  const renderUserButtons = () => {
-    if (cUser.currentUser != null && cUser.currentUser?.private.email != false) {
-      return <UserButtons setMyAccount={setMyAccount} setAddBien={setAddBien}/>
-    }
+  const showChat = (value: boolean) => {
+    setChat(value)
   }
-
-  const renderAdminButton = () => {
-    if (cUser.currentUser != null && cUser.currentUser?.private.email != false && cUser.currentUser?.admin) {
-      return <AdminButton setAdmin={setAdmin}/>
-    }
-  }
-
-  const renderChatButton = () => {
-    if (cUser.currentUser != null && cUser.currentUser?.private.email != false) {
-      return <ChatButton setChat={setChat} />
-    }
-  }
-    
-
-
 
   return (
     <>
-      <MyMenu setDiplayedData={setDiplayedData} data={displayedData} setUser={setUser} cUser={cUser} />
-      <Content style={{paddingTop: '130px', marginLeft: '5%', marginRight: '5%', paddingBottom: '110px'}}>
-        {renderUserButtons()}
-        {renderAdminButton()}
-
+      <Content>
+        <Row gutter={{ xs: 0, sm: 8, md: 16, lg: 32 }}>
         {displayedData.length > 0 ? displayedData.map((row, index) => {
           if(row != null){
             return (
-              <div className="listeRechercheBien" key={index}>
-                <Button type="primary" onClick={() => clickOnVisualisation(index)} className="buttonVisu" style={{backgroundImage: "url(" + row?.doc.photo + ")", backgroundSize: "cover"}}>
-                  <p className="titleBien">{row?.doc.localisation.ville} : {row?.doc.titre}</p>
-                </Button>
-              </div>
-            )}
-            return null
-          }) : <p>Aucun résultat trouvé</p>}
+              <Col key={index} xs={24} md={12} xl={8} className="card">
+                <Card
+                  hoverable
+                  style={{ width: 400, height:400 }}
+                  cover={<img alt={row?.doc.titre} src={row?.doc.photo} />}
+                  onClick={() => clickOnVisualisation(index)}
+                  key={index}
+                >
+                  <Meta title={row?.doc.titre} description={row?.doc.localisation.ville} />
+                </Card>
+              </Col>
+            )
+          }
+          return null
+        }) : <p>Aucun résultat trouvé</p>}
+        </Row>
+
+
         {visible && displayedData != null ?
           <Bien data={{
             Location: displayedData[clickedIndex]?.doc.localisation.ville, 
@@ -102,23 +71,13 @@ export const Page = () => {
           }} visible={visible} setVisible={setVisible} cUser={cUser}/> :
           null
         }
-
-        {addBien ?
-          <Annonce addBien={addBien} setAddBien={setAddBien} cUser={cUser} data={undefined}/> : null
+        {
+          chat ? 
+          <Chat setChat={showChat}  cUser={cUser}/> : null
         }
-
-        {admin ?
-          <Admin admin={admin} setAdmin={setAdmin}/> : null
-        }
-
-        {myAccount ?
-          <User myAccount={myAccount} setMyAccount={setMyAccount} cUser={cUser}/> : null
-        }
-
-        {renderChatButton()}
-        {chat ?
-          <Chat setChat={setChat} cUser={cUser}/> : null
-        }
+        <Button type="primary" onClick={() => setChat(true)} className="buttonChat" >
+          <WechatOutlined style={{fontSize: '40px'}}/>
+        </Button>
       </Content>
     </>
   );

@@ -1,6 +1,11 @@
-import { Button, Modal, Row, Form, Input, InputNumber, Col, Alert, DatePicker, Space } from 'antd';
+import { Button, Modal, Row, Form, Input, InputNumber, Col, DatePicker, Space, Image, Descriptions, Divider, List, Comment, Badge, Typography, ConfigProvider, Empty } from 'antd';
 import React, { useEffect, useState } from 'react';
 import db from '../../firebase.js';
+import './Bien.style.css'
+import { StarOutlined } from '@ant-design/icons';
+import moment from 'moment';
+
+const {Text} = Typography;
 
 interface Props {
   data: any;
@@ -120,111 +125,144 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
         onCancel={() => setVisible(false)}
         footer={[
           <Button key="back" onClick={() => setVisible(false)}>
-            Retour
-          </Button>,
-          userLoged ?
-          !showFormReservation ?
-          <Button key="submit" type="primary" onClick={() => setFormReservation(true)}>
-            Réserver
-          </Button> : null : null
+            Terminer
+          </Button>
         ]}
       >
-        <div style={{display: "flex", marginBottom: "50px"}}>
-          <div className="descBien">
-            <p><b>Vendeur :</b> {data.User.prenom}</p>
-            <p><b>Localisation :</b> {data.Location}</p>
-            <p><b>Type :</b> {data.Type}</p>
-            <p><b>Tarif :</b> {data.Tarif} €</p>
-            <p><b>Description :</b> {data.Description}</p>
-          </div>
-          <img className="imgBien" src={data.Photo} alt="" />
+        <div className="bien">
+          <Image
+            width={400}
+            src={data.Photo}
+            className="imgBien"
+          />
+          <Descriptions
+            className="descBien"
+            bordered
+            column={{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }}
+          >
+            <Descriptions.Item label="Vendeur">{data.User.prenom}</Descriptions.Item>
+            <Descriptions.Item label="Localisation">{data.Location}</Descriptions.Item>
+            <Descriptions.Item label="Type">{data.Type}</Descriptions.Item>
+            <Descriptions.Item label="Tarif">{data.Tarif} €</Descriptions.Item>
+            <Descriptions.Item label="Description">{data.Description}</Descriptions.Item>
+          </Descriptions>
         </div>
+        {userLoged ? ( showFormReservation ? <div>
+              <h2>Réservation</h2>
+              <Form onFinish={setReservation}>
+                <Row>
+                  <Col>
+                    <Form.Item label="Période de réservation :">
+                      <Space direction="vertical" size={12}>
+                        <RangePicker name="date" allowClear onChange={(date) => dateChange(date)}/>
+                      </Space>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                      <Text>Tarif total : </Text>
+                  </Col>
+                </Row>
+                <Row gutter={8}>
+                  <Col>
+                    <Button onClick={() => setFormReservation(false)}>
+                      Annuler
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button type="primary" htmlType="submit">
+                      Valider
+                    </Button>
+                  </Col>
+                </Row>
+              </Form>
+            </div>  :
+          <Button key="submit" type="primary" onClick={() => setFormReservation(true)}>
+            Réserver
+          </Button>) : null}
+        
+        <Divider />
 
-        {showReservationDone ?
-          <div>
-            <Alert style={{marginBottom: '20px'}} message="Réservation validée" type="success" />
-          </div> : null
-        }
-
-        {showFormReservation ?  
-          <div>
-            <h2>Réservation</h2>
-            <Form onFinish={setReservation}>
-              <Form.Item label="Période de réservation :">
-                <Space direction="vertical" size={12}>
-                  <RangePicker name="date" onChange={(date) => dateChange(date)}/>
-                </Space>
-              </Form.Item>
-              {/*<p>Tarif total : </p>*/}
-              <Button type="primary" htmlType="submit">
-                Valider
-              </Button>
-            </Form>
-          </div> :
-
-          <div>
+        <div>
             <h2>Avis</h2>
-            <Row>
-              {avis.length != 0 ?
-                avis.map(avi => {
-                  var date = new Date(avi.doc.date.seconds * 1000);
-                  var months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Decembre'];
-                  var year = date.getFullYear();
-                  var month = months[date.getMonth()];
-                  var day = date.getDate();
-                  if (avi.doc.status == "approved") {
-                    return (
-                      <Col className="avis">
-                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
-                          <p>Titre: {avi.doc.titre}</p>
-                          <p>Contenu: {avi.doc.contenu}</p>
-                          <p>Note: {avi.doc.note}</p>
-                      </Col>);
-                  } else if (avi.doc.status == "pending" && userLoged && cUser.currentUser.private.email == avi.doc.user.email) {
-                    return (
-                      <Col className="avis avisPending">
-                          <p style={{fontWeight: 'bold'}}>Votre avis est en attente d'approbation</p>
-                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
-                          <p>Titre: {avi.doc.titre}</p>
-                          <p>Contenu: {avi.doc.contenu}</p>
-                          <p>Note: {avi.doc.note}</p>
-                      </Col>);
-                  } else if (avi.doc.status == "refused" && userLoged && cUser.currentUser.private.email == avi.doc.user.email) {
-                    return (
-                      <Col className="avis avisRefused">
-                          <p style={{fontWeight: 'bold'}}>Votre avis a été refusé</p>
-                          <p>{avi.doc.user.prenom + ' : ' + day + ' ' + month + ' ' + year}</p>
-                          <p>Titre: {avi.doc.titre}</p>
-                          <p>Contenu: {avi.doc.contenu}</p>
-                          <p>Note: {avi.doc.note}</p>
-                      </Col>);
-                  }
-                }) : <p style={{marginRight: "10px"}}>Aucun avis pour ce bien.</p> }
-              {showFormAvis ? 
-                <Form onFinish={addAvis}>
-                  <Form.Item label="Titre :" name="title" rules={[{ required: true }]}>
-                    <Input />
-                  </Form.Item>
-                  <Form.Item label="Contenu :" name="content" rules={[{ required: true }]}>
-                    <Input.TextArea />
-                  </Form.Item>
-                  <Form.Item label="Note :" name='note' rules={[{ required: true }]}>
-                    <InputNumber min={1} max={5} />
-                  </Form.Item>
-                  <Button style={{marginRight: '5px'}} onClick={() => setFormAvis(false)}>
-                    Annuler
-                  </Button>
-                  <Button type="primary" htmlType="submit">
-                    Ajouter
-                  </Button>
-                </Form> : 
+            {showFormAvis ? 
+              <Form onFinish={addAvis} 
+              layout="vertical">
+                <Row gutter={16}>
+                  <Col span={20}>
+                    <Form.Item className="formItem" label="Titre :" name="title" rules={[{ required: true }]}>
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col span={4}>
+                    <Form.Item className="formItem" label="Note :" name='note' rules={[{ required: true }]}>
+                      <InputNumber min={1} max={5} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col flex={1}>
+                    <Form.Item className="formItem" label="Contenu :" name="content" rules={[{ required: true }]}>
+                      <Input.TextArea />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={8}>
+                  <Col>
+                    <Button onClick={() => setFormAvis(false)}>
+                      Annuler
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button type="primary" htmlType="submit">
+                      Ajouter
+                    </Button>
+                  </Col>
+                </Row>
+              </Form> : 
                 userLoged ?
                 <Button type="primary" key="submit" onClick={() => setFormAvis(true) }>
                   Rediger un avis
                 </Button> : null}
-            </Row>
+            
+            <ConfigProvider
+              renderEmpty={() => (
+                <Empty
+                  description="Aucun avis sur ce bien"
+                />
+              )}>
+              <List
+                header={avis.map((data => data.doc.status === "approved")).length > 0 ? avis.map(data => data.doc.status === "approved").length + " avis" : null}
+                itemLayout="horizontal"
+                dataSource={avis}
+                renderItem={item => (
+                  <List.Item>
+                    {
+                      userLoged && cUser.currentUser.private.email === item.doc.user.email ?
+
+                      <Badge.Ribbon text={item.doc.status === "pending" ? "En attente" : (item.doc.status === "refused" ? "Réfusé" : "Validé")} color={item.doc.status === "pending" ? "blue" : (item.doc.status === "refused" ? "red" : "green")}>
+                        <Comment
+                          author={<Text>{item.doc.user.prenom + ' : ' + item.doc.titre}</Text>}
+                          content={item.doc.contenu}
+                          datetime={new Date(item.doc.date.seconds * 1000).toLocaleString()}
+                          avatar={<>{item.doc.note} <StarOutlined /></>}
+                        />
+                      </Badge.Ribbon>
+                     :
+                     (item.doc.status === "approved" ? 
+                     <Comment
+                          author={<Text>{item.doc.user.prenom + ' : ' + item.doc.titre}</Text>}
+                          content={item.doc.contenu}
+                          datetime={new Date(item.doc.date.seconds * 1000).toLocaleString()}
+                          avatar={<>{item.doc.note} <StarOutlined /></>}
+                        /> : null)
+                    }
+                  </List.Item>
+                )}
+              />
+            </ConfigProvider>
           </div>
-        }
       </Modal>
     </>
   );
