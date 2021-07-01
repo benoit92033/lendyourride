@@ -80,7 +80,7 @@ export const Annonce = ({ addBien, setAddBien, data, cUser }: Props) => {
         setImages([image] as never[]);
       }
     }
-  }, []);
+  }, [data]);
 
   return (
     <>

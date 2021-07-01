@@ -16,9 +16,7 @@ function App() {
   const [displayedData, setDiplayedData] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log("lol")
-    const fetchData = async () => {
-      const snapshot = await db.collection('products').get();
+    Promise.resolve(db.collection('products').get()).then((snapshot) => {
       let arr: Array<any>;
       arr = [];
       snapshot.forEach((doc) => {
@@ -27,9 +25,37 @@ function App() {
         arr.push({doc: product})
       });
       setDiplayedData(arr);
-    };
- 
-    fetchData();
+    })
+  }, []);
+
+  
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user !== null) {
+        Promise.resolve(db.collection('users').where('private.email', '==', user?.email).get()).then(snapshot => {
+          if (!snapshot.empty) {
+            const user = snapshot.docs[0];
+            const data = user.data();
+            setUser({ currentUser: data });
+          } else {
+            let formattedUser = {
+              admin: false,
+              public: {
+                prenom: user?.displayName,
+                photo: user?.photoURL,
+              },
+              private: {
+                email: user?.email,
+                telephone: user?.phoneNumber,
+              }
+            }
+            setUser({ currentUser: formattedUser });
+          }
+        });
+      }
+    });
+    return () => unsubscribe();
   }, []);
   
   const [admin, setAdmin] = useState(false);
@@ -62,7 +88,6 @@ function App() {
     return (
       <Content>
         <MyMenu cUser={cUser} setDiplayedData={showData} data={displayedData} setAdmin={showAdmin} setAddBien={showAddBien} setUser={showUser} setMyAccount={showMyAccount}/>;
-        
         <Annonce addBien={addBien} setAddBien={showAddBien} cUser={cUser} data={undefined}/>
         {cUser.currentUser !== null && cUser.currentUser?.private.email !== false &&(<>
           <User myAccount={myAccount} setMyAccount={showMyAccount} cUser={cUser} />

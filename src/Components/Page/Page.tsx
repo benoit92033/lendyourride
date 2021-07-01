@@ -1,11 +1,10 @@
 import { Button, Card, Col, Row } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import { WechatOutlined } from '@ant-design/icons';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Bien } from '../Bien';
 import { Chat } from '../Chat';
 import './Page.style.css'
-import db from '../../firebase';
 
 const { Meta } = Card;
 
@@ -55,7 +54,7 @@ export const Page = ({setDisplayedData, displayedData, cUser} : Props) => {
         </Row>
 
 
-        {visible && displayedData != null ?
+        {visible && displayedData !== null ?
           <Bien data={{
             Location: displayedData[clickedIndex]?.doc.localisation.ville, 
             Title: displayedData[clickedIndex]?.doc.titre,
@@ -73,7 +72,7 @@ export const Page = ({setDisplayedData, displayedData, cUser} : Props) => {
         }
         {
           chat ? 
-          <Chat setChat={showChat}  cUser={cUser}/> : null
+          <Chat setChat={showChat} cUser={cUser}/> : null
         }
         <Button type="primary" onClick={() => setChat(true)} className="buttonChat" >
           <WechatOutlined style={{fontSize: '40px'}}/>

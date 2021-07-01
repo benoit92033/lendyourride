@@ -13,17 +13,17 @@ export const Admin = ({ admin, setAdmin }: Props) => {
   const [avis, setData] = useState<any[]>([]);
 
   const fetchData = async () => {
-    // Promise.resolve(db.collection('reviews')
-    //   .where('status', '==', 'pending').get()).then((snapshot)=>{
-    //     let arr: Array<any>;
-    //     arr = [];
-    //     snapshot.forEach((doc) => {
-    //       let aviss = doc.data()
-    //       aviss.avisId = doc.id
-    //       arr.push({doc: aviss})
-    //     });
-    //     setData(arr);
-    //   });
+    Promise.resolve(db.collection('reviews')
+      .where('status', '==', 'pending').get()).then((snapshot)=>{
+        let arr: Array<any>;
+        arr = [];
+        snapshot.forEach((doc) => {
+          let aviss = doc.data()
+          aviss.avisId = doc.id
+          arr.push({doc: aviss})
+        });
+        setData(arr);
+      });
   };
 
   const approveAvis = (avisId: any, approve: boolean) => {

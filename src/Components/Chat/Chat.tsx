@@ -1,6 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import Pusher from 'pusher';
-import Pusher_JS from 'pusher-js';
 import { Button, Form, Input } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import db from '../../firebase.js';
@@ -52,9 +50,7 @@ export const Chat = ({ setChat, cUser }: Props) => {
         </div>
         <div style={{display: 'block'}}>
         {messages.map(message => {
-            console.log(message);
-            console.log(cUser);
-            if (message.doc.sender.email == cUser.currentUser.private.email) {
+            if (message.doc.sender.email === cUser.currentUser.private.email) {
               return (
                 <div>
                   <p className="chatMessage" style={{backgroundColor: 'rgba(0, 123, 255, 0.3)'}}>{message.doc.content}</p>

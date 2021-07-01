@@ -1,6 +1,6 @@
-import { Input, Button, Row, Col, Typography, Avatar, List, Form } from 'antd';
+import { Input, Button, Row, Col, Typography, Avatar, List } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import './Menu.style.css';
 import logo from '../Images/logo.png';
 import db, { auth, signInWithGoogle } from '../../firebase';
@@ -11,7 +11,7 @@ const {Text} = Typography;
 const { Search } = Input;
 interface Props {
   data: Array<any>;
-  setDiplayedData: any;
+  setDiplayedData: (tab : any[]) => void;
   setAdmin: (value: boolean) => void;
   setAddBien: (value: boolean) => void;
   setMyAccount: (user : boolean) => void;
@@ -32,33 +32,6 @@ export const MyMenu = ({setDiplayedData, data, setAdmin, setAddBien, setMyAccoun
     })
     setDiplayedData(menuBien);
   }
-
-  useEffect(() => {
-    auth.onAuthStateChanged(user => {
-      if (user !== null) {
-        Promise.resolve(db.collection('users').where('private.email', '==', user?.email).get()).then(snapshot => {
-          if (!snapshot.empty) {
-            const user = snapshot.docs[0];
-            const data = user.data();
-            setUser({ currentUser: data });
-          } else {
-            let formattedUser = {
-              admin: false,
-              public: {
-                prenom: user?.displayName,
-                photo: user?.photoURL,
-              },
-              private: {
-                email: user?.email,
-                telephone: user?.phoneNumber,
-              }
-            }
-            setUser({ currentUser: formattedUser });
-          }
-        });
-      }
-    });
-  }, [cUser]);
 
   return (
     <>

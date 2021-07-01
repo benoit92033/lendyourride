@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import db from '../../firebase.js';
 import './Bien.style.css'
 import { StarOutlined } from '@ant-design/icons';
-import moment from 'moment';
 
 const {Text} = Typography;
 
@@ -19,60 +18,58 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
   const { RangePicker } = DatePicker;
   const [avis, setData] = useState<any[]>([]);
   const [userLoged, setUserLoged] = useState(false);
-
-  const fetchData = async () => {
-    const snapshot = await db.collection('reviews')
-      .where('product.id', '==', data.ProductId)
-      .get();
-    let arr: Array<any>;
-    arr = [];
-    snapshot.forEach((doc) => {
-      let avis = doc.data()
-      avis.avisId = doc.id
-      arr.push({doc: avis})
-    });
-    setData(arr);
-  };
+  const [showFormAvis, setFormAvis] = useState(false);
 
   useEffect(() => {
-    fetchData();
-    if (cUser.currentUser != null) {
-      setUserLoged(true);
-      if (cUser.currentUser.private.email === data.User.email) {
-        setUserLoged(false);
-      }
-    }
-  }, []);
+    Promise.resolve(db.collection('reviews')
+      .where('product.id', '==', data.ProductId)
+      .get()).then((snapshot) => {
+        let arr: Array<any>;
+        arr = [];
+        snapshot.forEach((doc) => {
+          let avis = doc.data()
+          avis.avisId = doc.id
+          arr.push({doc: avis})
+        });
+        setData(arr);;
+        if (cUser.currentUser != null) {
+          setUserLoged(true);
+          if (cUser.currentUser.private.email === data.User.email) {
+            setUserLoged(false);
+          }
+        }
 
-  const [showFormAvis, setFormAvis] = useState(false);
+      }
+
+      )
+  }, [cUser.currentUser, data.ProductId, data.User.email, showFormAvis]);
+
   const [showFormReservation, setFormReservation] = useState(false);
   const [showReservationDone, setReservationDone] = useState(false);
 
   const addAvis = (values: any) => {
-    db.collection('reviews').add({
-      contenu: values.content,
-      date: {
-        nanoseconds: 0,
-        seconds: Date.now() / 1000 | 0,
-      },
-      note: values.note,
-      product: {
-        description: data.Description,
-        location: data.Location,
-        tarif: data.Tarif,
-        titre: data.Title,
-        type: data.Type,
-        id: data.ProductId,
-      },
-      status: "pending",
-      titre: values.title,
-      user: {
-        email: cUser.currentUser.private.email,
-        prenom: cUser.currentUser.public.prenom,
-      }
-    }).then(()=> {
-      fetchData();
-    });
+    // db.collection('reviews').add({
+    //   contenu: values.content,
+    //   date: {
+    //     nanoseconds: 0,
+    //     seconds: Date.now() / 1000 | 0,
+    //   },
+    //   note: values.note,
+    //   product: {
+    //     description: data.Description,
+    //     location: data.Location,
+    //     tarif: data.Tarif,
+    //     titre: data.Title,
+    //     type: data.Type,
+    //     id: data.ProductId,
+    //   },
+    //   status: "pending",
+    //   titre: values.title,
+    //   user: {
+    //     email: cUser.currentUser.private.email,
+    //     prenom: cUser.currentUser.public.prenom,
+    //   }
+    // });
     setFormAvis(false);
   };
 
@@ -80,36 +77,36 @@ export const Bien = ({ data, visible, setVisible, cUser }: Props) => {
   const [dateFin, setDateFin] = useState<any[]>([]);
 
   const setReservation = () => {
-    db.collection('sales').add({
-      buyer: {
-        email: cUser.currentUser.private.email,
-        prenom: cUser.currentUser.public.prenom,
-      },
-      seller: {
-        email: data.User.email,
-        prenom: data.User.prenom,
-      },
-      date: {
-        nanoseconds: 0,
-        seconds: Date.now() / 1000 | 0,
-      },
-      startDate: dateDebut,
-      endDate: dateFin,
-      product: {
-        description: data.Description,
-        location: data.Location,
-        tarif: data.Tarif,
-        titre: data.Title,
-        type: data.Type,
-      }
-    }).then(()=> {
-      setFormReservation(false);
-      setReservationDone(true);
-    });
+    // db.collection('sales').add({
+    //   buyer: {
+    //     email: cUser.currentUser.private.email,
+    //     prenom: cUser.currentUser.public.prenom,
+    //   },
+    //   seller: {
+    //     email: data.User.email,
+    //     prenom: data.User.prenom,
+    //   },
+    //   date: {
+    //     nanoseconds: 0,
+    //     seconds: Date.now() / 1000 | 0,
+    //   },
+    //   startDate: dateDebut,
+    //   endDate: dateFin,
+    //   product: {
+    //     description: data.Description,
+    //     location: data.Location,
+    //     tarif: data.Tarif,
+    //     titre: data.Title,
+    //     type: data.Type,
+    //   }
+    // }).then(()=> {
+    //   setFormReservation(false);
+    //   setReservationDone(true);
+    // });
   };
 
   const dateChange = (date: any) => {
-    if (date[0] != undefined && date[1] != undefined) {
+    if (date[0] !== undefined && date[1] !== undefined) {
       setDateDebut(date[0].format('X'))
       setDateFin(date[1].format('X'))
     }
